@@ -5,7 +5,7 @@
 #' p + theme_onmath()
 theme_onmath <- function(base_size = 14) {
   theme_bw() +
-    theme(panel.background = element_blank(),
+  theme(panel.background = element_blank(),
           panel.grid.minor = element_blank(),
           plot.background = element_blank(),
           panel.border = element_blank(),

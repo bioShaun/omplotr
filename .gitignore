@@ -6,3 +6,4 @@
 # plots file
 *.png
 *.pdf
+inst/doc
