@@ -1,0 +1,14 @@
+Package: omplotr
+Type: Package
+Title: store plot functions & themes for onmath projects
+Version: 0.1.0
+Author: Lixuan Gui
+Maintainer: The package maintainer <ricekent@163.com>
+Description: store plot functions & themes for onmath projects.
+License: MIT
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    ggplot2,
+    scales
+RoxygenNote: 6.0.1
