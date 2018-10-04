@@ -16,5 +16,4 @@ GC plot function
 }
 \examples{
 gc_line_plot(gc_test_data)
-gc_line_plot(gc_test_data)
 }

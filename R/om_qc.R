@@ -30,7 +30,7 @@ gc_line_plot <- function(plot_data, output=NULL) {
   if (! is.null(output)) {
     plot_height <- 6 + sample_number/4
     plot_width <- 8 + sample_number/4
-    save_plot(gc_plot, output,
+    save_ggplot(gc_plot, output,
               width=plot_width,
               height=plot_height)
   }
@@ -71,7 +71,7 @@ reads_quality_plot <- function(plot_data, output=NULL) {
   if (! is.null(output)) {
     plot_height <- 6 + sample_number/4
     plot_width <- 6 + sample_number/4
-    save_plot(p, output,
+    save_ggplot(p, output,
               width=plot_width,
               height=plot_height)
   }

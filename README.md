@@ -1,5 +1,6 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+
 omplotr: 'ggplot2' Based RNAseq Plot Function Collection
 ========================================================
 
@@ -69,3 +70,36 @@ reads_quality_plot(rq_test_data)
 ```
 
 ![](show/README-unnamed-chunk-4-1.png)
+
+### Quant
+
+#### expression heatmap
+
+``` r
+# expression matrix
+head(exp_test_data, 4)
+```
+
+    #>                 9dpi-pj-jp1 9dpi-pj-jp2 9dpi-pj-jp3 9dpi-pj-jp4
+    #> ENSRNA049464904      64.515      48.860      34.595      25.636
+    #> ENSRNA049468231   17763.048   28554.280    4878.607   12802.249
+    #> ENSRNA049468277     544.106    1152.839     169.713     497.665
+    #> ENSRNA049471043    4926.117    7815.150    1198.127    4545.421
+
+``` r
+# sample information
+head(test_sample_data, 4)
+```
+
+    #>   condition      sample
+    #> 1 9dpi-pj-A 9dpi-pj-jp1
+    #> 2 9dpi-pj-A 9dpi-pj-jp2
+    #> 3 9dpi-pj-B 9dpi-pj-jp3
+    #> 4 9dpi-pj-B 9dpi-pj-jp4
+
+``` r
+# plot expression heatmap
+om_heatmap(exp_test_data, test_sample_data)
+```
+
+![](show/README-unnamed-chunk-5-1.png)

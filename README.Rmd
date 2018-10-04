@@ -55,3 +55,18 @@ head(rq_test_data, 4)
 # Reads Quality barplot
 reads_quality_plot(rq_test_data)
 ```
+
+### Quant
+
+#### expression heatmap
+
+```{r}
+# expression matrix
+head(exp_test_data, 4)
+
+# sample information
+head(test_sample_data, 4)
+
+# plot expression heatmap
+om_heatmap(exp_test_data, test_sample_data)
+```
