@@ -1,4 +1,5 @@
-omplotr store plot functions & themes for onmath projects.
+omplotr: 'ggplot2' Based RNAseq Plot Function Collection.
+=========================================================
 
 Theme
 -----
