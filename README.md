@@ -1,30 +1,25 @@
----
-title: "omplotr"
-author: "Lixuan Gui"
-date: "`r Sys.Date()`"
-output: 
-  md_document:
-    variant: markdown_github
-vignette: >
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
-
 omplotr store plot functions & themes for onmath projects.
 
-## Theme
+Theme
+-----
 
 `theme_onmath` is a ggplot theme used in almost all rnaseq plots.
 
-
-```{r}
+``` r
 library(omplotr)
+```
+
+    ## Loading required package: ggplot2
+
+``` r
 p <- ggplot(mtcars) + geom_point(aes(x = wt, y = mpg,colour = factor(gear)))
 p + theme_onmath() + ggtitle("theme_onmath")
 ```
 
-## Plot
+![](show/theme_onmath.png)
+
+Plot
+----
 
 functions to generate plot in ngs analysis
 
@@ -32,12 +27,16 @@ functions to generate plot in ngs analysis
 
 #### Reads GC distribution
 
-```{r}
+``` r
 gc_line_plot(gc_test_data)
 ```
 
+![](show/gc_line_plot.png)
+
 #### Reads Quality barplot
 
-```{r}
+``` r
 reads_quality_plot(rq_test_data)
 ```
+
+![](show/reads_quality_plot.png)
