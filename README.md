@@ -1,6 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-
 omplotr: 'ggplot2' Based RNAseq Plot Function Collection
 ========================================================
 
@@ -103,3 +102,33 @@ om_heatmap(exp_test_data, test_sample_data)
 ```
 
 ![](show/README-unnamed-chunk-5-1.png)
+
+#### expression box, violin and density plot
+
+``` r
+# boxplot
+om_boxplot(exp_test_data, test_sample_data, 'box')
+```
+
+![](show/README-unnamed-chunk-6-1.png)
+
+``` r
+# violin
+om_boxplot(exp_test_data, test_sample_data, 'violin')
+```
+
+![](show/README-unnamed-chunk-6-2.png)
+
+``` r
+# density
+om_boxplot(exp_test_data, test_sample_data, 'density')
+```
+
+![](show/README-unnamed-chunk-6-3.png)
+
+``` r
+# density
+om_boxplot(exp_test_data, test_sample_data, 'all')
+```
+
+![](show/README-unnamed-chunk-6-4.png)

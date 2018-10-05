@@ -70,3 +70,20 @@ head(test_sample_data, 4)
 # plot expression heatmap
 om_heatmap(exp_test_data, test_sample_data)
 ```
+
+#### expression box, violin and density plot
+
+```{r}
+# boxplot
+om_boxplot(exp_test_data, test_sample_data, 'box')
+
+# violin
+om_boxplot(exp_test_data, test_sample_data, 'violin')
+
+# density
+om_boxplot(exp_test_data, test_sample_data, 'density')
+
+# density
+om_boxplot(exp_test_data, test_sample_data, 'all')
+```
+

@@ -53,3 +53,108 @@ om_heatmap <- function(exp_data, samples, outdir=NULL) {
 
 }
 
+
+#' plot expression box, violin, density plot or merged plots of all above
+#' @param plot_data expression matrix
+#' @param samples sample <-> group map, first column is group id
+#' @param plot_type type of plot to choose: box, violin, density, all
+#' @param outdir out put directory, default is NULL, don't output file
+#' @examples
+#' om_boxplot(exp_test_data, test_sample_data, 'box')
+#' om_boxplot(exp_test_data, test_sample_data, 'violin')
+#' om_boxplot(exp_test_data, test_sample_data, 'density')
+#' om_boxplot(exp_test_data, test_sample_data, 'all')
+om_boxplot <- function(exp_data, samples,
+                       plot_type, outdir=NULL) {
+
+  # normalize data
+  plot_data <- norm_exp_data(exp_data)
+
+  # reshape matrix and add group inf
+  data.m <- reshape2::melt(as.matrix(plot_data))
+  colnames(data.m) <- c('gene_id', 'sample_id', 'exp_level')
+  row.names(samples) <- samples$sample
+  data.m$sample_id <- as.character(data.m$sample_id)
+  data.m$group <- samples[data.m$sample_id, 'condition']
+  data.m$sample_id <- factor(data.m$sample_id, levels = samples$sample)
+  data.m$exp_level <- as.numeric(data.m$exp_level)
+
+  # get sample & group colors
+  group_cols <- colorRampPalette(heatmap_col)(length(unique(data.m$group)))
+  sample_cols <- colorRampPalette(sample_cols)(length(samples$sample))
+  sample_num = length(unique(data.m$variable))
+
+  theme_set(theme_onmath() +
+              theme(axis.text.x = element_text(angle = -90, color = "black",
+                                               vjust = 0.5, hjust = 0, size = rel(1.2)),
+                    axis.text.y = element_text(size = rel(1.2)),
+                    legend.text = element_text(size = rel(0.8)),
+                    legend.key = element_blank(),
+                    axis.title.x = element_blank()))
+
+
+  boxplot <- ggplot(data.m, aes(x = sample_id, y = exp_level, fill = group)) +
+    geom_boxplot(notch = T) +
+    guides(fill = guide_legend(nrow = 8, title = "group")) +
+    scale_fill_manual(values = group_cols) +
+    ylab("Log2(TPM)")
+  boxplot_no_guide <- boxplot + guides(fill = F)
+
+  violin <- ggplot(data.m, aes(x = sample_id, y = exp_level, fill = group)) +
+    geom_violin() +
+    guides(fill = guide_legend(nrow = 8, title = "group")) +
+    scale_fill_manual(values = group_cols) +
+    ylab("Log2(TPM)")
+  violin_no_guide <- violin + guides(fill = F)
+
+  density_plot <- ggplot(data.m, aes(exp_level, color = sample_id, fill = group)) +
+    geom_density(alpha = 0.4) +
+    scale_fill_manual(values = group_cols) +
+    scale_color_manual(values = sample_cols) +
+    theme(axis.text.x = element_text(angle = 0)) +
+    guides(fill = guide_legend(nrow = 8, title = "group"),
+           color = guide_legend(nrow = 8, title = "sample")) +
+    ylab('Log2(TPM)')
+
+  merged_plot <- function() {
+    gridExtra::grid.arrange(boxplot_no_guide, violin_no_guide, density_plot,
+                              nrow = 2, layout_matrix = rbind(c(1,2), c(3, 3)))
+  }
+
+  ## save plots to list
+  plots_list <- list(
+    box=boxplot,
+    violin=violin,
+    density=density_plot
+  )
+
+  if (plot_type == 'all') {
+    if (! is.null(outdir)) {
+      out_prefix = file.path(outdir, 'Gene_expression')
+      out_plot <- merged_plot()
+      merge_width = 8 + sample_num/4
+      merge_height = 12 + sample_num/8
+      save_ggplot(out_plot, out_prefix,
+                  width = merge_width,
+                  height = merge_height)
+    } else {
+      return(merged_plot())
+    }
+
+  } else {
+    out_plot <- plots_list[[plot_type]]
+    if (! is.null(outdir)) {
+      out_prefix = file.path(outdir,
+                             paste('Gene_expression', plot_type, sep = '.'))
+      plot_width = 6 + sample_num/4
+      plot_height = 6 + sample_num/8
+      save_ggplot(out_plot, out_prefix,
+                  width = plot_width,
+                  height = plot_height)
+    } else {
+      return(out_plot)
+    }
+  }
+
+}
+
