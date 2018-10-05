@@ -82,8 +82,10 @@ om_boxplot(exp_test_data, test_sample_data, 'violin')
 
 # density
 om_boxplot(exp_test_data, test_sample_data, 'density')
+```
 
-# density
+```{r, fig.width = 6, fig.height = 10}
+# merged plot
 om_boxplot(exp_test_data, test_sample_data, 'all')
 ```
 

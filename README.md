@@ -1,5 +1,6 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+
 omplotr: 'ggplot2' Based RNAseq Plot Function Collection
 ========================================================
 
@@ -127,8 +128,8 @@ om_boxplot(exp_test_data, test_sample_data, 'density')
 ![](show/README-unnamed-chunk-6-3.png)
 
 ``` r
-# density
+# merged plot
 om_boxplot(exp_test_data, test_sample_data, 'all')
 ```
 
-![](show/README-unnamed-chunk-6-4.png)
+![](show/README-unnamed-chunk-7-1.png)
