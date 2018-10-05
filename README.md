@@ -1,6 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-
 omplotr: 'ggplot2' Based RNAseq Plot Function Collection
 ========================================================
 
@@ -73,7 +72,7 @@ reads_quality_plot(rq_test_data)
 
 ### Quant
 
-#### expression heatmap
+#### expression box, violin and density plot
 
 ``` r
 # expression matrix
@@ -98,38 +97,106 @@ head(test_sample_data, 4)
     #> 4 9dpi-pj-B 9dpi-pj-jp4
 
 ``` r
-# plot expression heatmap
-om_heatmap(exp_test_data, test_sample_data)
-```
-
-![](show/README-unnamed-chunk-5-1.png)
-
-#### expression box, violin and density plot
-
-``` r
 # boxplot
 om_boxplot(exp_test_data, test_sample_data, 'box')
 ```
 
-![](show/README-unnamed-chunk-6-1.png)
+![](show/README-unnamed-chunk-5-1.png)
 
 ``` r
 # violin
 om_boxplot(exp_test_data, test_sample_data, 'violin')
 ```
 
-![](show/README-unnamed-chunk-6-2.png)
+![](show/README-unnamed-chunk-5-2.png)
 
 ``` r
 # density
 om_boxplot(exp_test_data, test_sample_data, 'density')
 ```
 
-![](show/README-unnamed-chunk-6-3.png)
+![](show/README-unnamed-chunk-5-3.png)
 
 ``` r
 # merged plot
 om_boxplot(exp_test_data, test_sample_data, 'all')
 ```
 
+![](show/README-unnamed-chunk-6-1.png)
+
+#### expression PCA analysis point plot
+
+``` r
+om_pca_plot(exp_test_data, test_sample_data)
+```
+
 ![](show/README-unnamed-chunk-7-1.png)
+
+### expression correlation heatmap
+
+``` r
+om_correlation_plot(exp_test_data, test_sample_data)
+```
+
+![](show/README-unnamed-chunk-8-1.png)
+
+#### diff expression volcano plot
+
+``` r
+# diff result
+head(diff_test_data, 4)
+```
+
+    #>                  Gene_ID X9dpi.pj.jp1 X9dpi.pj.jp2 X9dpi.pj.jp3
+    #> 21437       Os01g0977250        4.780        4.551        7.806
+    #> 33806       Os03g0738600        1.209        0.946        1.338
+    #> 30663       Os03g0823900        5.598        5.303        6.322
+    #> 32700 EPlOSAG00000051674        0.000        0.000        1.482
+    #>       X9dpi.pj.jp4       logFC    PValue       FDR          compare
+    #> 21437        6.489 -0.21257899 0.3964249 0.6631611 Case1_vs_Control
+    #> 33806        1.392  0.03988567 0.9082303 1.0000000 Case1_vs_Control
+    #> 30663        7.596  0.04831892 0.8428859 0.9858939 Case1_vs_Control
+    #> 32700        0.000 -2.62518576 1.0000000 1.0000000 Case1_vs_Control
+
+``` r
+# plot volcano plot for a single compare
+om_volcano_plot(diff_test_data, 'Case_vs_Control')
+```
+
+![](show/README-unnamed-chunk-9-1.png)
+
+``` r
+# plot volcano plot for merged results
+om_volcano_plot(diff_test_data, 'ALL')
+```
+
+![](show/README-unnamed-chunk-9-2.png)
+
+#### expression heatmap
+
+``` r
+# plot expression heatmap
+om_heatmap(exp_test_data, test_sample_data)
+```
+
+![](show/README-unnamed-chunk-10-1.png)
+
+#### expression cluster line plot
+
+``` r
+# cluster result
+head(cluster_test_data, 4)
+```
+
+    #>     cluster            Gene_id    variable     value
+    #> 1 cluster_1 EPlOSAG00000008604 9dpi-pj-jp1 0.4935853
+    #> 2 cluster_1 EPlOSAG00000018483 9dpi-pj-jp1 0.5236810
+    #> 3 cluster_1 EPlOSAG00000027962 9dpi-pj-jp1 0.5008437
+    #> 4 cluster_1 EPlOSAG00000045132 9dpi-pj-jp1 0.4879498
+
+``` r
+# cluster plot
+om_cluster_plot(cluster_test_data)
+```
+
+![](show/README-unnamed-chunk-11-1.png)

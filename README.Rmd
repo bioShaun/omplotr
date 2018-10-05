@@ -58,7 +58,7 @@ reads_quality_plot(rq_test_data)
 
 ### Quant
 
-#### expression heatmap
+#### expression box, violin and density plot
 
 ```{r}
 # expression matrix
@@ -67,13 +67,6 @@ head(exp_test_data, 4)
 # sample information
 head(test_sample_data, 4)
 
-# plot expression heatmap
-om_heatmap(exp_test_data, test_sample_data)
-```
-
-#### expression box, violin and density plot
-
-```{r}
 # boxplot
 om_boxplot(exp_test_data, test_sample_data, 'box')
 
@@ -89,3 +82,42 @@ om_boxplot(exp_test_data, test_sample_data, 'density')
 om_boxplot(exp_test_data, test_sample_data, 'all')
 ```
 
+
+#### expression PCA analysis point plot
+```{r}
+om_pca_plot(exp_test_data, test_sample_data)
+```
+
+### expression correlation heatmap
+```{r}
+om_correlation_plot(exp_test_data, test_sample_data)
+```
+
+#### diff expression volcano plot
+```{r}
+# diff result
+head(diff_test_data, 4)
+
+# plot volcano plot for a single compare
+om_volcano_plot(diff_test_data, 'Case_vs_Control')
+
+# plot volcano plot for merged results
+om_volcano_plot(diff_test_data, 'ALL')
+```
+
+#### expression heatmap
+
+```{r}
+# plot expression heatmap
+om_heatmap(exp_test_data, test_sample_data)
+```
+
+
+#### expression cluster line plot
+```{r}
+# cluster result
+head(cluster_test_data, 4)
+
+# cluster plot
+om_cluster_plot(cluster_test_data)
+```
