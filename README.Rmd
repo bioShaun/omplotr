@@ -10,7 +10,9 @@ output:
 knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "show/README-",
-  warning = FALSE
+  warning = FALSE,
+  tidy = TRUE, 
+  tidy.opts = list(comment = FALSE)
 )
 ```
 
@@ -112,7 +114,6 @@ om_volcano_plot(diff_test_data, 'ALL')
 om_heatmap(exp_test_data, test_sample_data)
 ```
 
-
 #### expression cluster line plot
 ```{r}
 # cluster result
@@ -120,4 +121,31 @@ head(cluster_test_data, 4)
 
 # cluster plot
 om_cluster_plot(cluster_test_data)
+```
+
+### Enrichment analysis
+
+#### GO
+
+```{r}
+# diff genes
+head(go_test_data_list[['test_diff_genes']], 4)
+
+# gene length
+head(go_test_data_list[['test_gene_len']], 4)
+
+# go annotation
+head(go_test_data_list[['test_go_anno']], 4)
+
+# run goseq and show result
+goseq_output <- om_goseq(go_test_data_list[['test_diff_genes']], 
+                         go_test_data_list[['test_gene_len']], 
+                         go_test_data_list[['test_go_anno']])
+head(goseq_output, 4)
+
+# get topgo go annotation file
+gene_go_map <- system.file("extdata", "topgo_test_data.txt", package = "omplotr")
+
+# run topGO
+run_topgo(gene_go_map, go_test_data_list[['test_diff_genes']], goseq_output)
 ```
