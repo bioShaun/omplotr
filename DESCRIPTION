@@ -18,7 +18,12 @@ Imports:
     goseq,
     data.table,
     dplyr,
-    plyr
+    plyr,
+    edgeR,
+    argparser,
+    tximport,
+    rhdf5,
+    pathview
 RoxygenNote: 6.0.1
 Depends: 
     ggplot2,
