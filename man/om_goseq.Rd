@@ -4,14 +4,14 @@
 \alias{om_goseq}
 \title{goseq analysis}
 \usage{
-om_goseq(diff_genes, gene_length_df, go_anno_df, out_prefix = NULL)
+om_goseq(diff_genes, gene_length_df, gene_go_map, out_prefix = NULL)
 }
 \arguments{
 \item{diff_genes}{diff gene vector}
 
 \item{gene_length_df}{gene length dataframe}
 
-\item{go_anno_df}{go annotation file, seperated with ","}
+\item{gene_go_map}{gene go map file}
 
 \item{out_prefix}{out putfile prefix, default is NULL, don't output file}
 }
@@ -21,7 +21,7 @@ goseq analysis
 \examples{
 diff_genes <- go_test_data_list[['test_diff_genes']]
 gene_length_df <- go_test_data_list[['test_gene_len']]
-go_anno_df <- go_test_data_list[['test_go_anno']]
-goseq_output <- run_goseq(diff_genes, gene_length_df, go_anno_df)
+gene_go_map <- system.file("extdata", "topgo_test_data.txt", package = "omplotr")
+goseq_output <- om_goseq(diff_genes, gene_length_df, gene_go_map)
 head(goseq_output, 4)
 }

@@ -25,7 +25,6 @@ topGO plot
 gene_go_map <- system.file("extdata", "topgo_test_data.txt", package = "omplotr")
 diff_genes <- go_test_data_list[['test_diff_genes']]
 gene_length_df <- go_test_data_list[['test_gene_len']]
-go_anno_df <- go_test_data_list[['test_go_anno']]
-enrich_result_df <- run_goseq(diff_genes, gene_length_df, go_anno_df)
+enrich_result_df <- om_goseq(diff_genes, gene_length_df, gene_go_map)
 om_topgo(gene_go_map, diff_genes, enrich_result_df)
 }

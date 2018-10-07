@@ -1,15 +1,17 @@
 #' goseq analysis
 #' @param diff_genes diff gene vector
 #' @param gene_length_df gene length dataframe
-#' @param go_anno_df go annotation file, seperated with ","
+#' @param gene_go_map gene go map file
 #' @param out_prefix out putfile prefix, default is NULL, don't output file
 #' @examples
 #' diff_genes <- go_test_data_list[['test_diff_genes']]
 #' gene_length_df <- go_test_data_list[['test_gene_len']]
-#' go_anno_df <- go_test_data_list[['test_go_anno']]
-#' goseq_output <- run_goseq(diff_genes, gene_length_df, go_anno_df)
+#' gene_go_map <- system.file("extdata", "topgo_test_data.txt", package = "omplotr")
+#' goseq_output <- om_goseq(diff_genes, gene_length_df, gene_go_map)
 #' head(goseq_output, 4)
-om_goseq <- function(diff_genes, gene_length_df, go_anno_df, out_prefix=NULL) {
+om_goseq <- function(diff_genes, gene_length_df,
+                     gene_go_map, out_prefix=NULL) {
+  go_anno_df <- gene_map_to_go_anno(gene_go_map)
   all_id <- gene_length_df[, 1]
   gene.vector = as.integer(all_id %in% diff_genes)
   names(gene.vector) = all_id
@@ -19,13 +21,16 @@ om_goseq <- function(diff_genes, gene_length_df, go_anno_df, out_prefix=NULL) {
   pwf = goseq::nullp(gene.vector, bias.data = id_len, plot.fit = F)
   GO.wall = goseq::goseq(pwf, gene2cat = go_anno_df)
   GO.wall <- GO.wall[GO.wall$numDEInCat > 0, c(1, 2, 4, 5, 6, 7)]
-  GO.wall$qvalue <- p.adjust(GO.wall$over_represented_pvalue, method = "BH", n = length(GO.wall$over_represented_pvalue))
+  GO.wall$qvalue <- p.adjust(GO.wall$over_represented_pvalue,
+                             method = "BH",
+                             n = length(GO.wall$over_represented_pvalue))
   out_go <- GO.wall[, c(1, 2, 7, 3, 4, 5, 6)]
   out_go <- na.omit(out_go)
   ## add diff gene id to enrich table
   diff_go_anno_df <- go_anno_df[go_anno_df[, 1] %in% diff_genes, ]
   diff_go_anno_df <- diff_go_anno_df[diff_go_anno_df[, 1] != "", ]
-  out_go_de_id <- unlist(lapply(out_go[, 1], get_go_gene, gene_go_df = diff_go_anno_df))
+  out_go_de_id <- unlist(lapply(out_go[, 1], get_go_gene,
+                                gene_go_df = diff_go_anno_df))
   out_go$DE_id <- out_go_de_id
 
   if (! is.null(out_prefix)) {
@@ -58,8 +63,7 @@ om_goseq <- function(diff_genes, gene_length_df, go_anno_df, out_prefix=NULL) {
 #' gene_go_map <- system.file("extdata", "topgo_test_data.txt", package = "omplotr")
 #' diff_genes <- go_test_data_list[['test_diff_genes']]
 #' gene_length_df <- go_test_data_list[['test_gene_len']]
-#' go_anno_df <- go_test_data_list[['test_go_anno']]
-#' enrich_result_df <- om_goseq(diff_genes, gene_length_df, go_anno_df)
+#' enrich_result_df <- om_goseq(diff_genes, gene_length_df, gene_go_map)
 #' om_topgo(gene_go_map, diff_genes, enrich_result_df)
 om_topgo <- function(gene_go_map, diff_genes, enrich_result_df,
                       name=NULL, out_dir=NULL) {
@@ -77,30 +81,37 @@ om_topgo <- function(gene_go_map, diff_genes, enrich_result_df,
 
   for (i in 1:length(go_catogary_vector)) {
     go_catogary <- go_catogary_vector[i]
-    each_enrich_result <- dplyr::filter(enrich_result_df, ontology == go_catogary)
+    each_enrich_result <- dplyr::filter(enrich_result_df,
+                                        ontology == go_catogary)
     each_go_qvalue <- each_enrich_result$qvalue
     each_go_qvalue[which(each_go_qvalue == 0)] <- 1e-100
     names(each_go_qvalue) <- each_enrich_result[, 1]
     if (dim(each_enrich_result)[1] < 2) {
-      out_info <- paste("Too little gene annotated to ", go_catogary, sep = "")
+      out_info <- paste("Too little gene annotated to ",
+                        go_catogary, sep = "")
       print(out_info)
     } else {
-      GOdata <- new("topGOdata", ontology = go_catogary, allGenes = geneList,
-                    annot = annFUN.gene2GO, gene2GO = geneID2GO, nodeSize = 5)
+      GOdata <- new("topGOdata", ontology = go_catogary,
+                    allGenes = geneList,
+                    annot = annFUN.gene2GO,
+                    gene2GO = geneID2GO, nodeSize = 5)
       if (dim(each_enrich_result)[1] <= 10) {
         topgo_plot_fun <- function() {
-          showSigOfNodes(GOdata, each_go_qvalue, firstSigNodes = 1, useInfo = "all")
+          showSigOfNodes(GOdata, each_go_qvalue,
+                         firstSigNodes = 1, useInfo = "all")
         }
 
       } else {
         topgo_plot_fun <- function() {
-          showSigOfNodes(GOdata, each_go_qvalue, firstSigNodes = 5, useInfo = "all")
+          showSigOfNodes(GOdata, each_go_qvalue,
+                         firstSigNodes = 5, useInfo = "all")
         }
       }
       if (is.null(name) || is.null(out_dir)) {
         topgo_plot_fun()
       } else {
-        out_prefix <- file.path(out_dir, paste(name, go_catogary, 'GO.DAG', sep = '.'))
+        out_prefix <- file.path(out_dir,
+                                paste(name, go_catogary, 'GO.DAG', sep = '.'))
         save_general_plot(topgo_plot_fun(), out_prefix,
                           width = 8, height = 8)
       }

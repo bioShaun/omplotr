@@ -8,6 +8,7 @@ Description: store plot functions & themes for onmath projects.
 License: MIT
 Encoding: UTF-8
 LazyData: true
+biocViews:
 Imports: 
     scales,
     RColorBrewer,
@@ -16,7 +17,8 @@ Imports:
     gridExtra,
     goseq,
     data.table,
-    dplyr
+    dplyr,
+    plyr
 RoxygenNote: 6.0.1
 Depends: 
     ggplot2,

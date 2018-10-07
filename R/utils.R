@@ -67,3 +67,22 @@ get_go_test_data <- function(go_anno_file, gene_length_file,
   return(go_test_data_list)
 }
 
+
+flat_gene_go_map <- function(each_row) {
+  go_vector <- unlist(strsplit(as.character(each_row[2]), ","))
+  gene_vector <- rep(as.character(each_row[1]), length(go_vector))
+  go_df <- data.frame(gene_id=gene_vector, go_id=go_vector)
+  return(go_df)
+}
+
+gene_map_to_go_anno <- function(gene_go_map) {
+  gene_go_map_df <- data.table::fread(gene_go_map, header = F)
+  gene_go_map_df <- data.frame(gene_go_map_df)
+  go_anno_list <- lapply(data.frame(t(gene_go_map_df)), flat_gene_go_map)
+  go_anno_df <- plyr::ldply(go_anno_list, data.frame)
+  go_anno_df <- go_anno_df[, -1]
+  return(go_anno_df)
+}
+
+
+

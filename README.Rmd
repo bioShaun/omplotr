@@ -18,6 +18,17 @@ knitr::opts_chunk$set(
 
 # omplotr: 'ggplot2' Based RNAseq Plot Function Collection
 
+## Installation and loading
+
+Install the latest version from [GitHub](https://github.com/bioShaun/omplotr) as follow: 
+    
+   
+```{r, eval = FALSE}
+# Install
+if(!require(devtools)) install.packages("devtools")
+devtools::install_github("bioShaun/omplotr")
+```
+
 ## Theme
 
 `theme_onmath` is a ggplot theme used in almost all rnaseq plots.
@@ -78,7 +89,7 @@ om_boxplot(exp_test_data, test_sample_data, 'violin')
 om_boxplot(exp_test_data, test_sample_data, 'density')
 ```
 
-```{r, fig.width = 6, fig.height = 10}
+```{r exp-box-merged, fig.width = 6, fig.height = 10}
 # merged plot
 om_boxplot(exp_test_data, test_sample_data, 'all')
 ```
@@ -95,13 +106,15 @@ om_correlation_plot(exp_test_data, test_sample_data)
 ```
 
 #### diff expression volcano plot
-```{r exp-volcano, fig.width = 6, fig.height = 5}
+```{r exp-volcano-single, fig.width = 6, fig.height = 8}
 # diff result
 head(diff_test_data, 4)
 
 # plot volcano plot for a single compare
 om_volcano_plot(diff_test_data, 'Case_vs_Control')
+```
 
+```{r exp-volcano-merge, fig.width = 6, fig.height = 12}
 # plot volcano plot for merged results
 om_volcano_plot(diff_test_data, 'ALL')
 ```
@@ -135,16 +148,14 @@ head(test_diff_genes, 4)
 test_gene_len <- go_test_data_list[['test_gene_len']]
 head(test_gene_len, 4)
 
-# go annotation
-test_go_anno <- go_test_data_list[['test_go_anno']]
-head(test_go_anno, 4)
+# get go annotation file
+gene_go_map <- system.file("extdata", "topgo_test_data.txt", package = "omplotr")
+gene_go_map_df <- data.table::fread(gene_go_map, header = F)
+head(gene_go_map_df, 4)
 
 # run goseq and show result
-goseq_output <- om_goseq(test_diff_genes, test_gene_len, test_go_anno)
+goseq_output <- om_goseq(test_diff_genes, test_gene_len, gene_go_map)
 head(goseq_output, 4)
-
-# get topgo go annotation file
-gene_go_map <- system.file("extdata", "topgo_test_data.txt", package = "omplotr")
 
 # run topGO
 om_topgo(gene_go_map, test_diff_genes, goseq_output)

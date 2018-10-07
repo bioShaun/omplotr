@@ -1,7 +1,19 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+
 omplotr: 'ggplot2' Based RNAseq Plot Function Collection
 ========================================================
+
+Installation and loading
+------------------------
+
+Install the latest version from [GitHub](https://github.com/bioShaun/omplotr) as follow:
+
+``` r
+# Install
+if(!require(devtools)) install.packages("devtools")
+devtools::install_github("bioShaun/omplotr")
+```
 
 Theme
 -----
@@ -107,7 +119,7 @@ om_boxplot(exp_test_data, test_sample_data, 'density')
 om_boxplot(exp_test_data, test_sample_data, 'all')
 ```
 
-![](show/README-unnamed-chunk-2-1.png)
+![](show/README-exp-box-merged-1.png)
 
 #### expression PCA analysis point plot
 
@@ -145,15 +157,14 @@ head(diff_test_data, 4)
 om_volcano_plot(diff_test_data, 'Case_vs_Control')
 ```
 
-![](show/README-exp-volcano-1.png)
+![](show/README-exp-volcano-single-1.png)
 
 ``` r
-
 # plot volcano plot for merged results
 om_volcano_plot(diff_test_data, 'ALL')
 ```
 
-![](show/README-exp-volcano-2.png)
+![](show/README-exp-volcano-merge-1.png)
 
 #### expression heatmap
 
@@ -200,17 +211,18 @@ head(test_gene_len, 4)
 #> 3 Os01g0152200     3747
 #> 4 Os01g0295700     5836
 
-# go annotation
-test_go_anno <- go_test_data_list[['test_go_anno']]
-head(test_go_anno, 4)
-#>        gene_id      go_id
-#> 1 Os01g0100100 GO:0005622
-#> 2 Os01g0100100 GO:0006886
-#> 3 Os01g0100100 GO:0017137
-#> 4 Os01g0100100 GO:0005096
+# get go annotation file
+gene_go_map <- system.file("extdata", "topgo_test_data.txt", package = "omplotr")
+gene_go_map_df <- data.table::fread(gene_go_map, header = F)
+head(gene_go_map_df, 4)
+#>              V1                               V2
+#> 1: Os01g0166300                       GO:0017176
+#> 2: Os01g0296700 GO:0016787,GO:0005975,GO:0004553
+#> 3: Os01g0290700            GO:0005524,GO:0016887
+#> 4: Os01g0236400            GO:0005737,GO:0005856
 
 # run goseq and show result
-goseq_output <- om_goseq(test_diff_genes, test_gene_len, test_go_anno)
+goseq_output <- om_goseq(test_diff_genes, test_gene_len, gene_go_map)
 head(goseq_output, 4)
 #>       category over_represented_pvalue    qvalue numDEInCat numInCat
 #> 571 GO:0010287             0.008881002 0.3812842          2        2
@@ -223,13 +235,10 @@ head(goseq_output, 4)
 #> 76          transcription, RNA-templated       BP
 #> 123 RNA-directed RNA polymerase activity       MF
 #>                         DE_id
-#> 571 Os01g0118000,Os01g0173000
+#> 571 Os01g0173000,Os01g0118000
 #> 848 Os01g0235200,Os01g0251000
 #> 76  Os01g0198000,Os01g0198100
 #> 123 Os01g0198000,Os01g0198100
-
-# get topgo go annotation file
-gene_go_map <- system.file("extdata", "topgo_test_data.txt", package = "omplotr")
 
 # run topGO
 om_topgo(gene_go_map, test_diff_genes, goseq_output)
