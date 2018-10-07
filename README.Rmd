@@ -8,11 +8,10 @@ output:
 
 ```{r}
 knitr::opts_chunk$set(
+  collapse = TRUE,
   comment = "#>",
   fig.path = "show/README-",
-  warning = FALSE,
-  tidy = TRUE, 
-  tidy.opts = list(comment = FALSE)
+  warning = FALSE
 )
 ```
 
@@ -24,7 +23,7 @@ knitr::opts_chunk$set(
 `theme_onmath` is a ggplot theme used in almost all rnaseq plots.
 
 
-```{r}
+```{r theme_onmath, message=F, warning=F, fig.width = 6, fig.height = 5}
 library(omplotr)
 p <- ggplot(mtcars) + geom_point(aes(x = wt, y = mpg,colour = factor(gear)))
 p + theme_onmath() + ggtitle("theme_onmath")
@@ -38,7 +37,7 @@ functions to generate plot in ngs analysis
 
 #### Reads GC distribution
 
-```{r}
+```{r fastqc-gc, fig.width = 6, fig.height = 5}
 # Fastqc GC result
 head(gc_test_data, 4)
 
@@ -48,7 +47,7 @@ gc_line_plot(gc_test_data)
 
 #### Reads Quality barplot
 
-```{r}
+```{r fastqc-reads-quality, fig.width = 6, fig.height = 5}
 # Reads Quality result
 # Bars of Quality <= 30 were marked with color 'dodgerblue', 
 # Bars of Quality > 30 were marked with color 'navy'.
@@ -62,7 +61,7 @@ reads_quality_plot(rq_test_data)
 
 #### expression box, violin and density plot
 
-```{r}
+```{r exp-box, fig.width = 6, fig.height = 5}
 # expression matrix
 head(exp_test_data, 4)
 
@@ -86,17 +85,17 @@ om_boxplot(exp_test_data, test_sample_data, 'all')
 
 
 #### expression PCA analysis point plot
-```{r}
+```{r exp-pca, fig.width = 6, fig.height = 5}
 om_pca_plot(exp_test_data, test_sample_data)
 ```
 
 ### expression correlation heatmap
-```{r}
+```{r exp-cor}
 om_correlation_plot(exp_test_data, test_sample_data)
 ```
 
 #### diff expression volcano plot
-```{r}
+```{r exp-volcano, fig.width = 6, fig.height = 5}
 # diff result
 head(diff_test_data, 4)
 
@@ -109,13 +108,13 @@ om_volcano_plot(diff_test_data, 'ALL')
 
 #### expression heatmap
 
-```{r}
+```{r exp-heatmap, fig.width = 6, fig.height = 5}
 # plot expression heatmap
 om_heatmap(exp_test_data, test_sample_data)
 ```
 
 #### expression cluster line plot
-```{r}
+```{r exp-cluster, fig.width = 6, fig.height = 5}
 # cluster result
 head(cluster_test_data, 4)
 
@@ -127,25 +126,26 @@ om_cluster_plot(cluster_test_data)
 
 #### GO
 
-```{r}
+```{r go, message=F, warning=F, fig.width = 2.5, fig.height = 2.5}
 # diff genes
-head(go_test_data_list[['test_diff_genes']], 4)
+test_diff_genes <- go_test_data_list[['test_diff_genes']]
+head(test_diff_genes, 4)
 
 # gene length
-head(go_test_data_list[['test_gene_len']], 4)
+test_gene_len <- go_test_data_list[['test_gene_len']]
+head(test_gene_len, 4)
 
 # go annotation
-head(go_test_data_list[['test_go_anno']], 4)
+test_go_anno <- go_test_data_list[['test_go_anno']]
+head(test_go_anno, 4)
 
 # run goseq and show result
-goseq_output <- om_goseq(go_test_data_list[['test_diff_genes']], 
-                         go_test_data_list[['test_gene_len']], 
-                         go_test_data_list[['test_go_anno']])
+goseq_output <- om_goseq(test_diff_genes, test_gene_len, test_go_anno)
 head(goseq_output, 4)
 
 # get topgo go annotation file
 gene_go_map <- system.file("extdata", "topgo_test_data.txt", package = "omplotr")
 
 # run topGO
-run_topgo(gene_go_map, go_test_data_list[['test_diff_genes']], goseq_output)
+om_topgo(gene_go_map, test_diff_genes, goseq_output)
 ```

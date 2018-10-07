@@ -16,7 +16,7 @@ om_goseq <- function(diff_genes, gene_length_df, go_anno_df, out_prefix=NULL) {
   id_len <- gene_length_df[, 2]
   names(id_len) = all_id
   ## goseq
-  pwf = goseq::nullp(gene.vector, bias.data = id_len)
+  pwf = goseq::nullp(gene.vector, bias.data = id_len, plot.fit = F)
   GO.wall = goseq::goseq(pwf, gene2cat = go_anno_df)
   GO.wall <- GO.wall[GO.wall$numDEInCat > 0, c(1, 2, 4, 5, 6, 7)]
   GO.wall$qvalue <- p.adjust(GO.wall$over_represented_pvalue, method = "BH", n = length(GO.wall$over_represented_pvalue))
@@ -59,9 +59,9 @@ om_goseq <- function(diff_genes, gene_length_df, go_anno_df, out_prefix=NULL) {
 #' diff_genes <- go_test_data_list[['test_diff_genes']]
 #' gene_length_df <- go_test_data_list[['test_gene_len']]
 #' go_anno_df <- go_test_data_list[['test_go_anno']]
-#' enrich_result_df <- run_goseq(diff_genes, gene_length_df, go_anno_df)
-#' run_topgo(gene_go_map, diff_genes, enrich_result_df)
-run_topgo <- function(gene_go_map, diff_genes, enrich_result_df,
+#' enrich_result_df <- om_goseq(diff_genes, gene_length_df, go_anno_df)
+#' om_topgo(gene_go_map, diff_genes, enrich_result_df)
+om_topgo <- function(gene_go_map, diff_genes, enrich_result_df,
                       name=NULL, out_dir=NULL) {
   geneID2GO <- readMappings(file = gene_go_map)
   geneNames <- names(geneID2GO)
@@ -87,32 +87,22 @@ run_topgo <- function(gene_go_map, diff_genes, enrich_result_df,
     } else {
       GOdata <- new("topGOdata", ontology = go_catogary, allGenes = geneList,
                     annot = annFUN.gene2GO, gene2GO = geneID2GO, nodeSize = 5)
-      # topgo_data[['plot_data']][[i]] <- GOdata
       if (dim(each_enrich_result)[1] <= 10) {
-        # topgo_plot_fun <- function() {
-        #   showSigOfNodes(GOdata, each_go_qvalue, firstSigNodes = 1, useInfo = "all")
-        # }
-        # topgo_plots[[i]] <- showSigOfNodes(GOdata, each_go_qvalue, firstSigNodes = 1, useInfo = "all")
-      #   pdf(file = paste(out_dir, "/", name, ".", go_catogary, ".GO.DAG.pdf",
-      #                    sep = ""), width = 8, height = 8)
-      #   topGO::showSigOfNodes(GOdata, each_go_qvalue, firstSigNodes = 1, useInfo = "all")
-      #   dev.off()
-      #   Cairo(file = paste(out_dir, "/", name, ".", go_catogary, ".GO.DAG.png",
-      #                      sep = ""), type = "png", units = "in", width = 8, height = 8, pointsize = 12,
-      #         dpi = 300, bg = "white")
-      #   topGO::showSigOfNodes(GOdata, each_go_qvalue, firstSigNodes = 1, useInfo = "all")
-      #   dev.off()
+        topgo_plot_fun <- function() {
+          showSigOfNodes(GOdata, each_go_qvalue, firstSigNodes = 1, useInfo = "all")
+        }
+
       } else {
-        showSigOfNodes(GOdata, each_go_qvalue, firstSigNodes = 5, useInfo = "all")
-        # pdf(file = paste(out_dir, "/", name, ".", go_catogary, ".GO.DAG.pdf",
-        #                  sep = ""), width = 8, height = 8)
-        # showSigOfNodes(GOdata, each_go_qvalue, firstSigNodes = 5, useInfo = "all")
-        # dev.off()
-        # Cairo(file = paste(out_dir, "/", name, ".", go_catogary, ".GO.DAG.png",
-        #                    sep = ""), type = "png", units = "in", width = 8, height = 8, pointsize = 12,
-        #       dpi = 300, bg = "white")
-        # showSigOfNodes(GOdata, each_go_qvalue, firstSigNodes = 5, useInfo = "all")
-        # dev.off()
+        topgo_plot_fun <- function() {
+          showSigOfNodes(GOdata, each_go_qvalue, firstSigNodes = 5, useInfo = "all")
+        }
+      }
+      if (is.null(name) || is.null(out_dir)) {
+        topgo_plot_fun()
+      } else {
+        out_prefix <- file.path(out_dir, paste(name, go_catogary, 'GO.DAG', sep = '.'))
+        save_general_plot(topgo_plot_fun(), out_prefix,
+                          width = 8, height = 8)
       }
     }
   }
