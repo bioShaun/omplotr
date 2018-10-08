@@ -46,7 +46,12 @@ om_heatmap <- function(exp_data, samples, outdir=NULL) {
     out_prefix <- file.path(outdir, 'Diff.genes.heatmap')
     save_general_plot(draw_heatmap(), out_prefix,
                       width = heatmap_width,
-                      height = heatmap_heigh)
+                      height = heatmap_heigh,
+                      plot_type='pdf')
+    save_general_plot(draw_heatmap(), out_prefix,
+                      width = heatmap_width,
+                      height = heatmap_heigh,
+                      plot_type='png')
   } else {
     return(draw_heatmap())
   }
@@ -355,7 +360,14 @@ om_correlation_plot <- function(exp_data, samples, outdir=NULL) {
     write.table(sample_cor_df, file = paste(out_prefix, "txt",sep = "."),
                 quote = F, sep = "\t", row.names = F)
     save_general_plot(draw_heatmap(), out_prefix,
-                      width = heatmap_width, height = heatmap_heigh)
+                      width = heatmap_width,
+                      height = heatmap_heigh,
+                      plot_type='pdf')
+    save_general_plot(draw_heatmap(), out_prefix,
+                      width = heatmap_width,
+                      height = heatmap_heigh,
+                      plot_type='png')
+
   }
 
   return(draw_heatmap())

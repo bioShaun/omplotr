@@ -15,18 +15,20 @@ save_ggplot <- function(ggplot_out, output,
 }
 
 save_general_plot <- function(plot, output,
-                              width=8, height=6) {
-
-  pdf(paste(output, "pdf", sep = "."),
-      width = width, height = height, onefile = F)
-  tmp_plot <- dev.cur()
-  png(paste(output, "png", sep = "."),
-      width = width, height = height, units = "in", res = 300)
-  dev.control("enable")
-  plot
-  dev.copy(which=tmp_plot)
-  dev.off()
-  dev.off()
+                              width=8, height=6,
+                              plot_type='pdf') {
+  if (plot_type == 'pdf') {
+    pdf(paste(output, "pdf", sep = "."),
+        width = width, height = height, onefile = F)
+    plot
+    dev.off()
+  } else {
+    png(paste(output, "png", sep = "."),
+        width = width, height = height,
+        units = "in", res = 300)
+    plot
+    dev.off()
+  }
 }
 
 

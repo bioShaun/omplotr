@@ -113,7 +113,11 @@ om_topgo <- function(gene_go_map, diff_genes, enrich_result_df,
         out_prefix <- file.path(out_dir,
                                 paste(name, go_catogary, 'GO.DAG', sep = '.'))
         save_general_plot(topgo_plot_fun(), out_prefix,
-                          width = 8, height = 8)
+                          width = 8, height = 8,
+                          plot_type='pdf')
+        save_general_plot(topgo_plot_fun(), out_prefix,
+                          width = 8, height = 8,
+                          plot_type='png')
       }
     }
   }
