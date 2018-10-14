@@ -87,7 +87,7 @@ om_boxplot <- function(exp_data, samples,
   # get sample & group colors
   group_cols <- colorRampPalette(heatmap_col)(length(unique(data.m$group)))
   sample_cols <- colorRampPalette(sample_cols)(length(samples$sample))
-  sample_num = length(unique(data.m$variable))
+  sample_num = length(unique(data.m$sample_id))
 
   theme_set(theme_onmath() +
               theme(axis.text.x = element_text(angle = -90, color = "black",
