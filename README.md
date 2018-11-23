@@ -1,6 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-
 omplotr: 'ggplot2' Based RNAseq Plot Function Collection
 ========================================================
 
@@ -245,3 +244,41 @@ om_topgo(gene_go_map, test_diff_genes, goseq_output)
 ```
 
 ![](show/README-go-1.png)![](show/README-go-2.png)![](show/README-go-3.png)
+
+### Mapping
+
+``` r
+
+mapping_stats <- system.file("extdata", "all_sample.mapping.xls", package = "omplotr")
+
+# show mapping stats table
+mapping_df <- read.delim(mapping_stats)
+head(mapping_df, 6)
+#>                       Item        A        F1       K1        M1        M
+#> 1               sequences: 95851866 102408480 88220198 102921732 89688164
+#> 2            reads mapped: 94204523  98758455 87279503 101428039 88480886
+#> 3 reads mapped and paired: 93189512  98569864 87122868 101234396 87992732
+#> 4          reads unmapped:  1647343   3650025   940695   1493693  1207278
+#> 5   reads properly paired: 90701262  95693826 85319650  98997048 86123504
+#> 6            reads paired: 95851866 102408480 88220198 102921732 89688164
+#>          W
+#> 1 89827664
+#> 2 88521129
+#> 3 88075758
+#> 4  1306535
+#> 5 86226432
+#> 6 89827664
+
+# show mapping summary
+bwa_mapping_plot(mapping_stats, 5)
+```
+
+![](show/README-bwa-mapping-1.png)
+
+``` r
+
+# show detail sample information
+bwa_mapping_plot(mapping_stats, 10)
+```
+
+![](show/README-bwa-mapping-2.png)

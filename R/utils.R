@@ -87,4 +87,10 @@ gene_map_to_go_anno <- function(gene_go_map) {
 }
 
 
+save_mkdir <- function(dir_path) {
+  if (! dir.exists(dir_path)) {
+    dir.create(dir_path, recursive = TRUE)
+  }
+}
+
 

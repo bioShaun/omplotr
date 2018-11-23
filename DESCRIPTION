@@ -23,7 +23,8 @@ Imports:
     argparser,
     tximport,
     rhdf5,
-    pathview
+    pathview,
+    stringr
 RoxygenNote: 6.0.1
 Depends: 
     ggplot2,

@@ -160,3 +160,22 @@ head(goseq_output, 4)
 # run topGO
 om_topgo(gene_go_map, test_diff_genes, goseq_output)
 ```
+
+### Mapping
+
+```{r bwa-mapping, fig.width = 6, fig.height = 5}
+
+mapping_stats <- system.file("extdata", "all_sample.mapping.xls", package = "omplotr")
+
+# show mapping stats table
+mapping_df <- read.delim(mapping_stats)
+head(mapping_df, 6)
+
+# show mapping summary
+bwa_mapping_plot(mapping_stats, 5)
+
+# show detail sample information
+bwa_mapping_plot(mapping_stats, 10)
+
+```
+
