@@ -253,21 +253,17 @@ mapping_stats <- system.file("extdata", "all_sample.mapping.xls", package = "omp
 
 # show mapping stats table
 mapping_df <- read.delim(mapping_stats)
-head(mapping_df, 6)
+head(mapping_df, 4)
 #>                       Item        A        F1       K1        M1        M
 #> 1               sequences: 95851866 102408480 88220198 102921732 89688164
 #> 2            reads mapped: 94204523  98758455 87279503 101428039 88480886
 #> 3 reads mapped and paired: 93189512  98569864 87122868 101234396 87992732
 #> 4          reads unmapped:  1647343   3650025   940695   1493693  1207278
-#> 5   reads properly paired: 90701262  95693826 85319650  98997048 86123504
-#> 6            reads paired: 95851866 102408480 88220198 102921732 89688164
 #>          W
 #> 1 89827664
 #> 2 88521129
 #> 3 88075758
 #> 4  1306535
-#> 5 86226432
-#> 6 89827664
 
 # show mapping summary
 bwa_mapping_plot(mapping_stats, 5)
@@ -282,3 +278,31 @@ bwa_mapping_plot(mapping_stats, 10)
 ```
 
 ![](show/README-bwa-mapping-2.png)
+
+### Reads Coverage
+
+``` r
+
+cov_stats <- system.file("extdata", "all_sample.genome.cov.xls", package = "omplotr")
+
+# show coverage table
+cov_df <- read.delim(cov_stats)
+head(cov_df, 4)
+#>   Depth      A     F1     K1     M1      M      W
+#> 1     1 876435 764784 944681 786463 814983 857249
+#> 2     2 630273 573112 761490 564038 600328 635532
+#> 3     3 553156 479804 677398 484714 513316 544938
+#> 4     4 523375 436214 652812 453986 470339 503152
+
+# show coverage summary
+reads_cov_plot(cov_stats, 5, 100)
+```
+
+![](show/README-reads-cov-1.png)
+
+``` r
+# show detail sample information
+reads_cov_plot(cov_stats, 10, 100)
+```
+
+![](show/README-reads-cov-2.png)

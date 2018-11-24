@@ -93,4 +93,17 @@ save_mkdir <- function(dir_path) {
   }
 }
 
-
+palette_colors <- function(pal_name, sample_num) {
+  col_pal_inf <- RColorBrewer::brewer.pal.info
+  if (! pal_name %in% rownames(col_pal_inf)) {
+    print('Palette for analysis:')
+    print(rownames(col_pal_inf))
+    stop('Wrong palette name!')
+  }
+  col_num <- col_pal_inf[pal_name, 'maxcolors']
+  if (sample_num <= col_num) {
+    return(RColorBrewer::brewer.pal(sample_num, pal_name))
+  } else {
+    return(colorRampPalette(RColorBrewer::brewer.pal(col_num, pal_name))(sample_num))
+  }
+}

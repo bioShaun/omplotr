@@ -169,7 +169,7 @@ mapping_stats <- system.file("extdata", "all_sample.mapping.xls", package = "omp
 
 # show mapping stats table
 mapping_df <- read.delim(mapping_stats)
-head(mapping_df, 6)
+head(mapping_df, 4)
 
 # show mapping summary
 bwa_mapping_plot(mapping_stats, 5)
@@ -179,3 +179,18 @@ bwa_mapping_plot(mapping_stats, 10)
 
 ```
 
+### Reads Coverage
+
+```{r reads-cov, warning=F, fig.width = 6, fig.height = 5}
+
+cov_stats <- system.file("extdata", "all_sample.genome.cov.xls", package = "omplotr")
+
+# show coverage table
+cov_df <- read.delim(cov_stats)
+head(cov_df, 4)
+
+# show coverage summary
+reads_cov_plot(cov_stats, 5, 100)
+# show detail sample information
+reads_cov_plot(cov_stats, 10, 100)
+```
