@@ -48,10 +48,15 @@ bwa_mapping_plot <- function(mapping_stats, sample_limit, out_prefix=NULL) {
       geom_boxplot()
   }
 
+  if (sample_number <= 9) {
+    sample_cols <- RColorBrewer::brewer.pal(sample_number, 'Set1')
+  } else {
+    sample_cols <- colorRampPalette(RColorBrewer::brewer.pal(9, 'Set1'))(sample_number)
+  }
   map_plot <- map_plot +
     theme_onmath() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-    scale_fill_brewer(palette = 'Set1') +
+    scale_fill_manual(values = sample_cols) +
     xlab('') + ylab('Percentage of Reads') +
     guides(fill=guide_legend(title = 'SampleID')) +
     scale_y_continuous(labels = scales::percent)
