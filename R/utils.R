@@ -107,3 +107,8 @@ palette_colors <- function(pal_name, sample_num) {
     return(colorRampPalette(RColorBrewer::brewer.pal(col_num, pal_name))(sample_num))
   }
 }
+
+
+str_percent <- function(x, digits = 2, format = "f", ...) {
+  paste0(formatC(100 * x, format = format, digits = digits, ...), "%")
+}

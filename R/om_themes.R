@@ -30,3 +30,16 @@ theme_onmath <- function(base_size = 14) {
           strip.text = element_text(face = "bold", size = rel(1.2)))
 }
 
+
+
+blank_theme <- function(base_size = 14) {
+  theme_minimal()+
+  theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    panel.border = element_blank(),
+    panel.grid=element_blank(),
+    axis.ticks = element_blank(),
+    plot.title=element_text(size=base_size, face="bold")
+  )
+}

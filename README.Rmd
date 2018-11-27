@@ -34,7 +34,7 @@ devtools::install_github("bioShaun/omplotr")
 `theme_onmath` is a ggplot theme used in almost all rnaseq plots.
 
 
-```{r theme_onmath, message=F, warning=F, fig.width = 6, fig.height = 5}
+```{r theme_onmath, message=F, warning=F, fig.width = 4, fig.height = 3}
 library(omplotr)
 p <- ggplot(mtcars) + geom_point(aes(x = wt, y = mpg,colour = factor(gear)))
 p + theme_onmath() + ggtitle("theme_onmath")
@@ -48,7 +48,7 @@ functions to generate plot in ngs analysis
 
 #### Reads GC distribution
 
-```{r fastqc-gc, fig.width = 6, fig.height = 5}
+```{r fastqc-gc, fig.width = 4, fig.height = 3}
 # Fastqc GC result
 head(gc_test_data, 4)
 
@@ -58,7 +58,7 @@ gc_line_plot(gc_test_data)
 
 #### Reads Quality barplot
 
-```{r fastqc-reads-quality, fig.width = 6, fig.height = 5}
+```{r fastqc-reads-quality, fig.width = 4, fig.height = 3}
 # Reads Quality result
 # Bars of Quality <= 30 were marked with color 'dodgerblue', 
 # Bars of Quality > 30 were marked with color 'navy'.
@@ -72,7 +72,7 @@ reads_quality_plot(rq_test_data)
 
 #### expression box, violin and density plot
 
-```{r exp-box, fig.width = 6, fig.height = 5}
+```{r exp-box, fig.width = 4, fig.height = 3}
 # expression matrix
 head(exp_test_data, 4)
 
@@ -96,7 +96,7 @@ om_boxplot(exp_test_data, test_sample_data, 'all')
 
 
 #### expression PCA analysis point plot
-```{r exp-pca, fig.width = 6, fig.height = 5}
+```{r exp-pca, fig.width = 4, fig.height = 3}
 om_pca_plot(exp_test_data, test_sample_data)
 ```
 
@@ -106,7 +106,7 @@ om_correlation_plot(exp_test_data, test_sample_data)
 ```
 
 #### diff expression volcano plot
-```{r exp-volcano-single, fig.width = 6, fig.height = 8}
+```{r exp-volcano-single, fig.width = 4, fig.height = 4}
 # diff result
 head(diff_test_data, 4)
 
@@ -114,14 +114,14 @@ head(diff_test_data, 4)
 om_volcano_plot(diff_test_data, 'Case_vs_Control')
 ```
 
-```{r exp-volcano-merge, fig.width = 6, fig.height = 12}
+```{r exp-volcano-merge, fig.width = 4, fig.height = 6}
 # plot volcano plot for merged results
 om_volcano_plot(diff_test_data, 'ALL')
 ```
 
 #### expression heatmap
 
-```{r exp-heatmap, fig.width = 6, fig.height = 5}
+```{r exp-heatmap, fig.width = 6, fig.height = 6}
 # plot expression heatmap
 om_heatmap(exp_test_data, test_sample_data)
 ```
@@ -172,16 +172,16 @@ mapping_df <- read.delim(mapping_stats)
 head(mapping_df, 4)
 
 # show mapping summary
-bwa_mapping_plot(mapping_stats, 5)
+om_bwa_mapping_plot(mapping_stats, 5)
 
 # show detail sample information
-bwa_mapping_plot(mapping_stats, 10)
+om_bwa_mapping_plot(mapping_stats, 10)
 
 ```
 
 ### Reads Coverage
 
-```{r reads-cov, warning=F, fig.width = 6, fig.height = 5}
+```{r reads-cov, warning=F, fig.width = 4, fig.height = 4}
 
 cov_stats <- system.file("extdata", "all_sample.genome.cov.xls", package = "omplotr")
 
@@ -190,7 +190,35 @@ cov_df <- read.delim(cov_stats)
 head(cov_df, 4)
 
 # show coverage summary
-reads_cov_plot(cov_stats, 5, 100)
+om_reads_cov_plot(cov_stats, 5, 100)
 # show detail sample information
-reads_cov_plot(cov_stats, 10, 100)
+om_reads_cov_plot(cov_stats, 10, 100)
+```
+
+### Variant Distribution
+
+```{r var-por, warning=F, fig.width=4, fig.height=4}
+
+# transform variant summary data
+stats_names <- om_const_reseq_variant[['var_file_labs']][1:2]
+stats_dir <- system.file("extdata", "variant_stats", 
+                         package = "omplotr")
+impact_map_file <- system.file("extdata", "variant_stats", "snpeff_varEffects.csv", 
+                               package = "omplotr")
+test_pie_stats <- lapply(stats_names, om_var_pie_stats, 
+                         stats_dir=stats_dir, 
+                         impact_map_file=impact_map_file)
+head(test_pie_stats[[1]], 4)
+
+# plot pie plot for each sample
+a_om_test_var_stats <- dplyr::filter(om_test_var_stats[[1]], variable == 'A')
+om_var_pie_plot(a_om_test_var_stats)
+
+```
+
+```{r var-summary, warning=F, fig.width=6, fig.height=4}
+# variant summary boxplot
+om_test_var_stats_df <- plyr::ldply(om_test_var_stats, data.frame)
+om_var_summary_plot(om_test_var_stats_df)
+
 ```

@@ -1,5 +1,6 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+
 omplotr: 'ggplot2' Based RNAseq Plot Function Collection
 ========================================================
 
@@ -266,7 +267,7 @@ head(mapping_df, 4)
 #> 4  1306535
 
 # show mapping summary
-bwa_mapping_plot(mapping_stats, 5)
+om_bwa_mapping_plot(mapping_stats, 5)
 ```
 
 ![](show/README-bwa-mapping-1.png)
@@ -274,7 +275,7 @@ bwa_mapping_plot(mapping_stats, 5)
 ``` r
 
 # show detail sample information
-bwa_mapping_plot(mapping_stats, 10)
+om_bwa_mapping_plot(mapping_stats, 10)
 ```
 
 ![](show/README-bwa-mapping-2.png)
@@ -295,14 +296,49 @@ head(cov_df, 4)
 #> 4     4 523375 436214 652812 453986 470339 503152
 
 # show coverage summary
-reads_cov_plot(cov_stats, 5, 100)
+om_reads_cov_plot(cov_stats, 5, 100)
 ```
 
 ![](show/README-reads-cov-1.png)
 
 ``` r
 # show detail sample information
-reads_cov_plot(cov_stats, 10, 100)
+om_reads_cov_plot(cov_stats, 10, 100)
 ```
 
 ![](show/README-reads-cov-2.png)
+
+### Variant Distribution
+
+``` r
+
+# transform variant summary data
+stats_names <- om_const_reseq_variant[['var_file_labs']][1:2]
+stats_dir <- system.file("extdata", "variant_stats", 
+                         package = "omplotr")
+impact_map_file <- system.file("extdata", "variant_stats", "snpeff_varEffects.csv", 
+                               package = "omplotr")
+test_pie_stats <- lapply(stats_names, om_var_pie_stats, 
+                         stats_dir=stats_dir, 
+                         impact_map_file=impact_map_file)
+head(test_pie_stats[[1]], 4)
+#>   Type variable      value Percentage     fig
+#> 1  DEL        A 0.09495793      9.50% varType
+#> 2  INS        A 0.09794564      9.79% varType
+#> 3  SNP        A 0.80709642     80.71% varType
+#> 4  DEL       F1 0.09068346      9.07% varType
+
+# plot pie plot for each sample
+a_om_test_var_stats <- dplyr::filter(om_test_var_stats[[1]], variable == 'A')
+om_var_pie_plot(a_om_test_var_stats)
+```
+
+![](show/README-var-por-1.png)
+
+``` r
+# variant summary boxplot
+om_test_var_stats_df <- plyr::ldply(om_test_var_stats, data.frame)
+om_var_summary_plot(om_test_var_stats_df)
+```
+
+![](show/README-var-summary-1.png)

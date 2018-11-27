@@ -16,11 +16,11 @@
 #' @examples
 #' mapping_stats <- system.file("extdata", "all_sample.mapping.xls", package = "omplotr")
 #' # show mapping summary
-#' bwa_mapping_plot(mapping_stats, 5)
+#' om_bwa_mapping_plot(mapping_stats, 5)
 #' # show detail sample information
-#' bwa_mapping_plot(mapping_stats, 10)
+#' om_bwa_mapping_plot(mapping_stats, 10)
 
-bwa_mapping_plot <- function(mapping_stats, sample_limit, out_prefix=NULL) {
+om_bwa_mapping_plot <- function(mapping_stats, sample_limit, out_prefix=NULL) {
 
   mapping_plot_order <- c('reads mapped', 'reads mapped and paired',
                           'reads properly paired', 'reads MQ0',
@@ -39,26 +39,30 @@ bwa_mapping_plot <- function(mapping_stats, sample_limit, out_prefix=NULL) {
                                 levels = mapping_plot_order)
   m_mapping_per_df <- reshape2::melt(mapping_per_df, id.vars = c('Item'))
 
-  if (sample_number < sample_limit) {
-    map_plot <- ggplot(m_mapping_per_df, aes(Item, value, fill=variable)) +
-      geom_bar(stat = 'identity', position = position_dodge(),
-               color='black')
-  } else {
-    map_plot <- ggplot(m_mapping_per_df, aes(Item, value, fill=Item)) +
-      geom_boxplot()
-  }
-
   if (sample_number <= 9) {
     sample_cols <- RColorBrewer::brewer.pal(sample_number, 'Set1')
   } else {
     sample_cols <- colorRampPalette(RColorBrewer::brewer.pal(9, 'Set1'))(sample_number)
   }
+
+  if (sample_number < sample_limit) {
+    map_plot <- ggplot(m_mapping_per_df, aes(Item, value, fill=variable)) +
+      geom_bar(stat = 'identity', position = position_dodge(),
+               color='white') +
+      scale_fill_manual(values = sample_cols)
+  } else {
+    map_plot <- ggplot(m_mapping_per_df, aes(Item, value, color=Item)) +
+      geom_boxplot() +
+      geom_jitter(alpha=0.8) +
+      scale_color_manual(values = sample_cols)
+  }
+
   map_plot <- map_plot +
     theme_onmath() +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-    scale_fill_manual(values = sample_cols) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1),
+          panel.grid.major.x = element_blank()) +
     xlab('') + ylab('Percentage of Reads') +
-    guides(fill=guide_legend(title = 'SampleID')) +
+    guides(color=guide_legend(title = 'SampleID')) +
     scale_y_continuous(labels = scales::percent)
   if (! is.null(out_prefix)) {
     out_dir <- dirname(out_prefix)
@@ -89,36 +93,43 @@ bwa_mapping_plot <- function(mapping_stats, sample_limit, out_prefix=NULL) {
 #' cov_stats <- system.file("extdata", "all_sample.genome.cov.xls", package = "omplotr")
 #'
 #' # show coverage summary
-#' reads_cov_plot(cov_stats, 5, 100)
+#' om_reads_cov_plot(cov_stats, 5, 100)
 #' # show detail sample information
-#' reads_cov_plot(cov_stats, 10, 100)
-reads_cov_plot <- function(coverage_table, sample_limit, max_depth, out_prefix=NULL) {
+#' om_reads_cov_plot(cov_stats, 10, 100)
+om_reads_cov_plot <- function(coverage_table, sample_limit, max_depth, out_prefix=NULL) {
   cov.data <- read.table(coverage_table,header = T)
   cov_sum <- apply(cov.data[,c(-1)],2,sum)
   sample_num <- dim(cov.data)[2] -1
-  cum.data <- cbind(cov.data$Depth,1-cumsum(cov.data[,c(-1)])/cov_sum)
+  cov_cum <- 1-cumsum(cov.data[,c(-1)])/cov_sum
+  plot_breaks <- c(seq(0, max_depth/2, max_depth/10), max_depth)
+  cum.data <- cbind(cov.data$Depth,cov_cum)
   colnames(cum.data)[1] <- "Depth"
   cum_melt <- reshape2::melt(cum.data,id.vars = 1)
   colnames(cum_melt) <- c("Depth","SampleID","value")
-  if (sample_num < sample_limit) {
-    sample_col <- palette_colors(pal_name = 'Set1',
-                                 sample_num = sample_num)
-    plot_breaks <- c(c(0, max_depth/2, max_depth/10), max_depth)
+  sample_col <- palette_colors(pal_name = 'Set1',
+                               sample_num = sample_num)
 
+  if (sample_num < sample_limit) {
     cov_fig <- ggplot(cum_melt, aes(Depth, value, colour = SampleID)) +
       geom_line(size = 1) +
       scale_x_continuous(breaks = plot_breaks,
                          limits = c(0, max_depth)) +
       scale_color_manual(values = sample_col)
   } else {
-    plot_depth <- seq(max_depth/10, max_depth/2, max_depth/10)
+    plot_depth <- seq(max(max_depth/20, 5), max_depth/2, max(max_depth/20, 5))
     sel_cum_melt <- dplyr::filter(cum_melt, Depth %in% plot_depth)
-    cov_fig <- ggplot(sel_cum_melt, aes(Depth, value, group=Depth, fill=Depth)) +
+    cov_fig <- ggplot(sel_cum_melt, aes(Depth, value, group=Depth, color=Depth)) +
       geom_boxplot() +
+      geom_jitter(alpha=0.8, position=position_jitter(0.8)) +
       scale_fill_gradient(guide = F)
-  }
-  cov_fig <- cov_fig + ylab("Fraction of Reads \u2265 Depth") +
+
+    }
+
+  cov_fig <- cov_fig +
+    scale_y_continuous(labels = scales::percent) +
+    ylab("Fraction of Reads \u2265 Depth") +
     theme_onmath()
+
   if (! is.null(out_prefix)) {
     out_dir <- dirname(out_prefix)
     path_name <- save_mkdir(out_dir)
@@ -128,3 +139,139 @@ reads_cov_plot <- function(coverage_table, sample_limit, max_depth, out_prefix=N
   return(cov_fig)
 }
 
+
+#' Transform variants summary to plot data for ggplot
+#'
+#' @param stats_name      type of summary file
+#' @param stats_dir       directory of summary file
+#' @param impact_map_file snpeff effect impact file
+#' @param stats_prefix    prefix of summary file
+#' @param varRegion_order plot order of variant region
+#'
+#' @examples
+#'
+#' stats_names <- om_const_reseq_variant[['var_file_labs']][1:2]
+#' stats_dir <- system.file("extdata", "variant_stats", package = "omplotr")
+#' impact_map_file <- system.file("extdata", "variant_stats", "snpeff_varEffects.csv", package = "omplotr")
+#' test_pie_stats <- lapply(stats_names, om_var_pie_stats, stats_dir=stats_dir, impact_map_file=impact_map_file)
+#' head(test_pie_stats[[1]], 4)
+om_var_pie_stats <- function(stats_name, stats_dir,
+                               impact_map_file,
+                               stats_prefix='all_sample',
+                               varRegion_order=NULL) {
+  stats_file <- file.path(stats_dir,
+                          paste(stats_prefix, stats_name,
+                                'conut.summary.xls', sep='.'))
+  impact_map <- read.csv(impact_map_file)
+  var_df <- read.delim(stats_file, row.names = 1)
+  var_df <- var_df[rowSums(var_df) > 0, ]
+  var_sum <- apply(var_df,2,sum)
+  p_var_df <- data.frame(t(t(var_df) / var_sum),
+                         check.names = F)
+  p_var_df$Type <- rownames(p_var_df)
+  m_p_var_df <- reshape2::melt(p_var_df, id.vars = 'Type')
+  m_p_var_df$Percentage <- str_percent(m_p_var_df$value)
+  m_p_var_df$fig <- stats_name
+  m_p_var_df$Type <- stringr::str_replace(m_p_var_df$Type, ' ', '')
+  if (stats_name == 'varRegion') {
+    m_p_var_df <- dplyr::filter(m_p_var_df, ! Type %in% c('GENE', 'TRANSCRIPT'))
+    m_p_var_df$Type <- factor(m_p_var_df$Type,
+                              levels = varRegion_order)
+  } else if (stats_name == 'varEffects') {
+    m_p_var_col <- colnames(m_p_var_df)
+    m_p_var_df <- merge(m_p_var_df, impact_map,
+                        by.x = 'Type', by.y = 'effect')
+    m_p_var_df$fig <- paste(m_p_var_df$fig,
+                            m_p_var_df$impact,
+                            sep = '-')
+    m_p_var_df <- m_p_var_df[, m_p_var_col]
+  }
+  return(m_p_var_df)
+}
+
+
+#' Pie Plot of variant stats
+#'
+#' Using ggplot2 to generate pie plot of variant summary.
+#' Variant summary data is generated using \code{om_var_pie_stats}.
+#'
+#' @param sample_var_stats variant stats of each sample
+#' @param color_pal        color palette name, default is "Set2"
+#' @param out_prefix       output prefix, default is NULL, no output
+#'
+#' @examples
+#'
+#' # pie plot data format
+#' a_om_test_var_stats <- dplyr::filter(om_test_var_stats[[1]], variable == 'A')
+#' head(a_om_test_var_stats)
+#' # plot
+#' om_var_pie_plot(a_om_test_var_stats)
+om_var_pie_plot <- function(sample_var_stats, color_pal='Set2', out_prefix=NULL) {
+  type_num <- length(sample_var_stats$Type)
+  sample_name <- unique(sample_var_stats$variable)
+  plot_type <- unique(sample_var_stats$fig)
+  type_color <- palette_colors(pal_name = color_pal,
+                               sample_num = type_num)
+  names(type_color) <- sample_var_stats$Type
+  lg_label <- paste(sample_var_stats$Type,
+                    ' (',
+                    sample_var_stats$Percentage,
+                    ')', sep = '')
+  names(lg_label) <- sample_var_stats$Type
+  pie <- ggplot(sample_var_stats, aes(x = "", y=value, fill = Type)) +
+    geom_bar(width = 1, stat = "identity", color='white') +
+    coord_polar("y", start = 0) +
+    blank_theme() + theme(axis.text.x=element_blank()) +
+    scale_fill_manual(values = type_color,
+                      labels = lg_label) +
+    guides(fill=guide_legend(title = '')) +
+    ggtitle(paste(sample_name, plot_type, 'Plot'))
+  if (! is.null(out_prefix)) {
+    out_dir <- dirname(out_prefix)
+    path_name <- save_mkdir(out_dir)
+    save_ggplot(ggplot_out = pie,
+                output = out_prefix)
+  }
+  return(pie)
+}
+
+#' Variant summary plot
+#'
+#' Variant portion distribution summary plot using ggplot2.
+#' Variant summary data is generated using \code{om_var_pie_stats}.
+#'
+#' @param var_stats_df variant stats dataframe
+#' @param out_prefix   output prefix, default is NULL, no output
+#'
+#' @examples
+#'
+#' om_test_var_stats_df <- plyr::ldply(om_test_var_stats, data.frame)
+#' om_var_summary_plot(om_test_var_stats_df)
+om_var_summary_plot <- function(var_stats_df,
+                             out_prefix=NULL,
+                             width = 30,
+                             height = 12) {
+  type_num <- length(unique(var_stats_df$Type))
+  box_col <- palette_colors(pal_name = 'Set1',
+                            sample_num = type_num)
+  stats_summary <- ggplot(var_stats_df, aes(Type, value, color=Type)) +
+    geom_jitter(alpha=0.5) +
+    geom_boxplot() +
+    coord_flip() +
+    facet_wrap(~fig, scales = 'free', ncol = 4) +
+    guides(color=F) +
+    scale_y_continuous(labels = scales::percent) +
+    scale_color_manual(values = box_col) +
+    theme_onmath() +
+    xlab('') + ylab('')
+
+  if (! is.null(out_prefix)) {
+    out_dir <- dirname(out_prefix)
+    path_name <- save_mkdir(out_dir)
+    save_ggplot(ggplot_out = stats_summary,
+                output = out_prefix,
+                width = width,
+                height = height)
+  }
+  return(stats_summary)
+}
