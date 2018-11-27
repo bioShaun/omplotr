@@ -1,5 +1,12 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
+``` r
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "show/README-",
+  warning = FALSE
+)
+```
 
 omplotr: 'ggplot2' Based RNAseq Plot Function Collection
 ========================================================
