@@ -197,7 +197,7 @@ om_reads_cov_plot(cov_stats, 10, 100)
 
 ### Variant Distribution
 
-```{r var-por, warning=F, fig.width=5, fig.height=5}
+```{r var-por, warning=F, fig.width=6, fig.height=5}
 
 # transform variant summary data
 stats_names <- om_const_reseq_variant[['var_file_labs']][1:2]
