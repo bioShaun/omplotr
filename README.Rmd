@@ -48,7 +48,7 @@ functions to generate plot in ngs analysis
 
 #### Reads GC distribution
 
-```{r fastqc-gc, fig.width = 4, fig.height = 3}
+```{r fastqc-gc, fig.width = 5, fig.height = 5}
 # Fastqc GC result
 head(gc_test_data, 4)
 
@@ -58,7 +58,7 @@ gc_line_plot(gc_test_data)
 
 #### Reads Quality barplot
 
-```{r fastqc-reads-quality, fig.width = 4, fig.height = 3}
+```{r fastqc-reads-quality, fig.width = 5, fig.height = 5}
 # Reads Quality result
 # Bars of Quality <= 30 were marked with color 'dodgerblue', 
 # Bars of Quality > 30 were marked with color 'navy'.
@@ -72,7 +72,7 @@ reads_quality_plot(rq_test_data)
 
 #### expression box, violin and density plot
 
-```{r exp-box, fig.width = 4, fig.height = 3}
+```{r exp-box, fig.width = 5, fig.height = 5}
 # expression matrix
 head(exp_test_data, 4)
 
@@ -96,7 +96,7 @@ om_boxplot(exp_test_data, test_sample_data, 'all')
 
 
 #### expression PCA analysis point plot
-```{r exp-pca, fig.width = 4, fig.height = 3}
+```{r exp-pca, fig.width = 5, fig.height = 5}
 om_pca_plot(exp_test_data, test_sample_data)
 ```
 
@@ -106,7 +106,7 @@ om_correlation_plot(exp_test_data, test_sample_data)
 ```
 
 #### diff expression volcano plot
-```{r exp-volcano-single, fig.width = 4, fig.height = 4}
+```{r exp-volcano-single, fig.width = 5, fig.height = 5}
 # diff result
 head(diff_test_data, 4)
 
@@ -181,7 +181,7 @@ om_bwa_mapping_plot(mapping_stats, 10)
 
 ### Reads Coverage
 
-```{r reads-cov, warning=F, fig.width = 4, fig.height = 4}
+```{r reads-cov, warning=F, fig.width = 5, fig.height = 5}
 
 cov_stats <- system.file("extdata", "all_sample.genome.cov.xls", package = "omplotr")
 
@@ -197,7 +197,7 @@ om_reads_cov_plot(cov_stats, 10, 100)
 
 ### Variant Distribution
 
-```{r var-por, warning=F, fig.width=4, fig.height=4}
+```{r var-por, warning=F, fig.width=5, fig.height=5}
 
 # transform variant summary data
 stats_names <- om_const_reseq_variant[['var_file_labs']][1:2]
