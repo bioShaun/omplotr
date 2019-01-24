@@ -161,7 +161,7 @@ om_var_pie_stats <- function(stats_name, stats_dir,
                                varRegion_order=NULL) {
   stats_file <- file.path(stats_dir,
                           paste(stats_prefix, stats_name,
-                                'conut.summary.xls', sep='.'))
+                                'count.summary.xls', sep='.'))
   impact_map <- read.csv(impact_map_file)
   var_df <- read.delim(stats_file, row.names = 1)
   var_df <- var_df[rowSums(var_df) > 0, ]
