@@ -90,9 +90,8 @@ om_boxplot <- function(exp_data, samples,
   sample_num = length(unique(data.m$sample_id))
 
   theme_set(theme_onmath() +
-              theme(axis.text.x = element_text(angle = -90, color = "black",
-                                               vjust = 0.5, hjust = 0, size = rel(1.2)),
-                    axis.text.y = element_text(size = rel(1.2)),
+              theme(axis.text.x = element_text(angle = 90,
+                                               vjust = 0.5, hjust = 0),
                     legend.text = element_text(size = rel(0.8)),
                     legend.key = element_blank()))
 
@@ -383,7 +382,9 @@ om_cluster_plot <- function(plot_data, out_prefix=NULL) {
 
   cluster_number <- length(unique(plot_data$cluster))
   col_theme <- colorRampPalette(heatmap_col)(cluster_number)
-  theme_cluster <- theme_onmath() + theme(axis.text.x = element_text(vjust = -0.2, size = rel(.6), angle = 90))
+  theme_cluster <- theme_onmath() + theme(axis.text.x = element_text(vjust = -0.2,
+                                                                     angle = 90,
+                                                                     size = rel(0.8)))
 
   cluster_plot <- ggplot(plot_data, aes(x=variable, y=value, group = Gene_id, color=cluster)) +
     geom_line(alpha = 0.2) +
