@@ -48,10 +48,60 @@ om_goseq <- function(diff_genes, gene_length_df,
   return(out_go)
 }
 
+#' plot enrichment barplot
+#' @param enrich_df GO/KEGG enrichment result table
+#' @param term_number term number to show, default is 30
+#' @param ylab_title text of ylab, default is "-log10(qvalue)"
+#' @param out_prefix output plot file prefix
+#'
+#' @examples
+#' # kegg enrichment plot
+#' kegg_enrich_file <- system.file("extdata", "enrichment", "example.kegg.enrichment.txt", package = "omplotr")
+#' kegg_enrich_list <- clean_enrich_table(kegg_enrich_file)
+#' head(kegg_enrich_list$table, 4)
+#' om_enrich_bar_plot(kegg_enrich_list$table, ylab_title=kegg_enrich_list$title)
+#' # go enrichment plot
+#' go_enrich_file <- system.file("extdata", "enrichment", "example.go.enrichment.txt", package = "omplotr")
+#' go_enrich_list <- clean_enrich_table(go_enrich_file)
+#' om_enrich_bar_plot(go_enrich_list$table, ylab_title=go_enrich_list$title)
+om_enrich_bar_plot <- function(enrich_df,
+                               term_number=30,
+                               ylab_title='-log10(qvalue)',
+                               out_prefix=NULL) {
+  enrich_df <- dplyr::filter(enrich_df, qvalue < 1)
+  if (dim(enrich_df)[1] > 0) {
+    enrich_df$log10qvalue <- -log10(enrich_df$qvalue)
+    enrich_df$wrap_term <- sapply(enrich_df$term, wrap_long_name)
+    enrich_df$wrap_term <- factor(enrich_df$wrap_term,
+                                  levels = rev(enrich_df$wrap_term))
+    top_df <- head(enrich_df, term_number)
 
-# om_draw_topgo <- function(topgo_data) {
-#
-# }
+    plot_witdh <- 6
+    plot_height <- dim(top_df)[1] / 3
+
+    p <- ggplot(top_df, aes(wrap_term, log10qvalue, fill = ontology, alpha = log10qvalue)) +
+      geom_bar(stat = 'identity', width = 0.45) +
+      coord_flip() +
+      facet_grid(ontology~., scales = 'free_y',
+                 space = 'free_y') +
+      theme_onmath() +
+      theme(axis.text.y = element_text(color = 'grey30', face = "plain",
+                                       size = rel(0.75)),
+            strip.text.y = element_text(angle = 0, colour = 'grey30')) +
+      scale_fill_brewer(palette = 'Set1') +
+      guides(fill = F, alpha = F) +
+      xlab('') +
+      ylab(ylab_title)
+    if (! is.null(out_prefix)) {
+      save_ggplot(p, out_prefix,
+                  width = plot_witdh,
+                  height = plot_height)
+    }
+    return(p)
+  } else {
+    return('Nothing to plot!')
+  }
+}
 
 #' topGO plot
 #' @param gene_go_map gene go map file

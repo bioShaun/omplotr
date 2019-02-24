@@ -137,9 +137,8 @@ om_cluster_plot(cluster_test_data)
 
 ### Enrichment analysis
 
-#### GO
-
-```{r go, message=F, warning=F, fig.width = 2.5, fig.height = 2.5}
+#### GO enrichment analysis
+```{r go_enrich, message=F, warning=F, fig.width = 6, fig.height = 10}
 # diff genes
 test_diff_genes <- go_test_data_list[['test_diff_genes']]
 head(test_diff_genes, 4)
@@ -157,8 +156,20 @@ head(gene_go_map_df, 4)
 goseq_output <- om_goseq(test_diff_genes, test_gene_len, gene_go_map)
 head(goseq_output, 4)
 
+# go enrichment bar plot
+go_enrich_file <- system.file("extdata", "enrichment", 
+                              "example.go.enrichment.txt", 
+                              package = "omplotr")
+go_enrich_list <- clean_enrich_table(go_enrich_file)
+om_enrich_bar_plot(go_enrich_list$table, ylab_title=go_enrich_list$title)
+
+```
+
+#### GO DAG graph
+```{r go_dag, message=F, warning=F, fig.width = 2.5, fig.height = 2.5}
 # run topGO
 om_topgo(gene_go_map, test_diff_genes, goseq_output)
+
 ```
 
 ### Mapping

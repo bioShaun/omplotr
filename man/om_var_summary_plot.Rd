@@ -4,7 +4,8 @@
 \alias{om_var_summary_plot}
 \title{Variant summary plot}
 \usage{
-om_var_summary_plot(var_stats_df, out_prefix = NULL)
+om_var_summary_plot(var_stats_df, out_prefix = NULL, width = 30,
+  height = 12)
 }
 \arguments{
 \item{var_stats_df}{variant stats dataframe}

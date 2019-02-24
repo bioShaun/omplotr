@@ -112,3 +112,23 @@ palette_colors <- function(pal_name, sample_num) {
 str_percent <- function(x, digits = 2, format = "f", ...) {
   paste0(formatC(100 * x, format = format, digits = digits, ...), "%")
 }
+
+wrap_long_name <- function(name, width=30) {
+  return(paste(strwrap(name, width = width), collapse="\n"))
+}
+
+clean_enrich_table <- function(enrich_file) {
+  enrich_file_name <- basename(enrich_file)
+  enrich_df <- read.delim(enrich_file)
+  if (stringr::str_detect(enrich_file_name, 'go.enrichment')) {
+    enrich_df <- enrich_df[, c('qvalue', 'term', 'ontology')]
+    ylab_title <- '-log10(qvalue)'
+
+  } else if (stringr::str_detect(enrich_file_name, 'kegg.enrichment')) {
+    enrich_df <- enrich_df[, c('Corrected.P.Value', 'X.Term', 'Database')]
+    colnames(enrich_df) <- c('qvalue', 'term', 'ontology')
+    ylab_title <- '-log10(Corrected.P.Value)'
+  }
+  enrich_plot_data_list <- list(table=enrich_df, title=ylab_title)
+  return(enrich_plot_data_list)
+}

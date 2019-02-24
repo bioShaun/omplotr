@@ -194,7 +194,7 @@ om_cluster_plot(cluster_test_data)
 
 ### Enrichment analysis
 
-#### GO
+#### GO enrichment analysis
 
 ``` r
 # diff genes
@@ -240,11 +240,24 @@ head(goseq_output, 4)
 #> 76  Os01g0198000,Os01g0198100
 #> 123 Os01g0198000,Os01g0198100
 
+# go enrichment bar plot
+go_enrich_file <- system.file("extdata", "enrichment", 
+                              "example.go.enrichment.txt", 
+                              package = "omplotr")
+go_enrich_list <- clean_enrich_table(go_enrich_file)
+om_enrich_bar_plot(go_enrich_list$table, ylab_title=go_enrich_list$title)
+```
+
+![](show/README-go_enrich-1.png)
+
+#### GO DAG graph
+
+``` r
 # run topGO
 om_topgo(gene_go_map, test_diff_genes, goseq_output)
 ```
 
-![](show/README-go-1.png)![](show/README-go-2.png)![](show/README-go-3.png)
+![](show/README-go_dag-1.png)![](show/README-go_dag-2.png)![](show/README-go_dag-3.png)
 
 ### Mapping
 
