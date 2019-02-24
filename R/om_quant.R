@@ -248,7 +248,7 @@ om_volcano_plot <- function(dpa_results, compare_name,
     p <- p + guides(color = guide_legend(title = "")) +
       scale_color_manual(values = c(red = red,green = green, blue = blue),
                          breaks = c("green", "red"), labels = c(green_label,red_label)) +
-      ggtitle(compare_name) + scale_y_continuous(breaks = c(0,1.3, 3, 10, 20, 30),
+      ggtitle(compare_name) + scale_y_continuous(breaks = c(0, 10, 20, 30),
                                                  limits = c(0, logFDR_limit)) +
       scale_x_continuous(breaks = c(-8,-4, -2, -1, 0, 1, 2, 4, 8),
                          limits = c(-logFC_limit, logFC_limit))
