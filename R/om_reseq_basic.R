@@ -27,6 +27,7 @@ om_bwa_mapping_plot <- function(mapping_stats, sample_limit, out_prefix=NULL) {
                           'non-primary alignments', 'reads unmapped')
 
   mapping_df <- read.delim(mapping_stats)
+  colnames(mapping_df)[1] <- 'Item'
   sample_number <- dim(mapping_df)[2] - 1
   mapping_df$Item <- stringr::str_replace(mapping_df$Item, ":", "")
   mapping_per_df <- mapping_df[, -1]
@@ -98,6 +99,7 @@ om_bwa_mapping_plot <- function(mapping_stats, sample_limit, out_prefix=NULL) {
 #' om_reads_cov_plot(cov_stats, 10, 100)
 om_reads_cov_plot <- function(coverage_table, sample_limit, max_depth, out_prefix=NULL) {
   cov.data <- read.table(coverage_table,header = T)
+  colnames(cov.data)[1] <- "Depth"
   cov_sum <- apply(cov.data[,c(-1)],2,sum)
   sample_num <- dim(cov.data)[2] -1
   cov_cum <- 1-cumsum(cov.data[,c(-1)])/cov_sum
@@ -157,11 +159,10 @@ om_reads_cov_plot <- function(coverage_table, sample_limit, max_depth, out_prefi
 #' head(test_pie_stats[[1]], 4)
 om_var_pie_stats <- function(stats_name, stats_dir,
                                impact_map_file,
-                               stats_prefix='all_sample',
                                varRegion_order=NULL) {
   stats_file <- file.path(stats_dir,
-                          paste(stats_prefix, stats_name,
-                                'count.summary.xls', sep='.'))
+                          paste(stats_name,
+                                'count.summary.txt', sep='.'))
   impact_map <- read.csv(impact_map_file)
   var_df <- read.delim(stats_file, row.names = 1)
   var_df <- var_df[rowSums(var_df) > 0, ]
@@ -258,7 +259,7 @@ om_var_summary_plot <- function(var_stats_df,
     geom_jitter(alpha=0.5) +
     geom_boxplot() +
     coord_flip() +
-    facet_wrap(~fig, scales = 'free', ncol = 4) +
+    facet_wrap(~fig, scales = 'free', ncol = 5) +
     guides(color=F) +
     scale_y_continuous(labels = scales::percent) +
     scale_color_manual(values = box_col) +
