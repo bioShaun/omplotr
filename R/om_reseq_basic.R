@@ -163,6 +163,10 @@ om_var_pie_stats <- function(stats_name, stats_dir,
   stats_file <- file.path(stats_dir,
                           paste(stats_name,
                                 'count.summary.txt', sep='.'))
+  if(! file.exists(stats_file)) {
+    warning(paste(stats_file, 'Not exists!'))
+    return(NULL)
+  }
   impact_map <- read.csv(impact_map_file)
   var_df <- read.delim(stats_file, row.names = 1)
   var_df <- var_df[rowSums(var_df) > 0, ]
