@@ -4,7 +4,8 @@
 #' @param outdir out put directory, default is NULL, don't output file
 #' @examples
 #' om_heatmap(exp_test_data, test_sample_data)
-om_heatmap <- function(exp_data, samples, outdir=NULL) {
+om_heatmap <- function(exp_data, samples,
+                       outdir=NULL, out_prefix=NULL) {
 
   # normalize exp data
   plot_data <- norm_exp_data(exp_data)
@@ -52,9 +53,19 @@ om_heatmap <- function(exp_data, samples, outdir=NULL) {
                       width = heatmap_width,
                       height = heatmap_heigh,
                       plot_type='png')
-  } else {
-    return(draw_heatmap())
+  } else if (! is.null(out_prefix)) {
+    out_dir <- dirname(out_prefix)
+    path_name <- save_mkdir(out_dir)
+    save_general_plot(draw_heatmap(), out_prefix,
+                      width = heatmap_width,
+                      height = heatmap_heigh,
+                      plot_type='pdf')
+    save_general_plot(draw_heatmap(), out_prefix,
+                      width = heatmap_width,
+                      height = heatmap_heigh,
+                      plot_type='png')
   }
+  return(draw_heatmap())
 
 }
 
@@ -271,7 +282,8 @@ om_volcano_plot <- function(dpa_results, compare_name,
 #' @param outdir out put directory, default is NULL, don't output file
 #' @examples
 #' om_pca_plot(exp_test_data, test_sample_data)
-om_pca_plot <- function(exp_data, samples, outdir=NULL) {
+om_pca_plot <- function(exp_data, samples, outdir=NULL,
+                        out_prefix=NULL) {
 
   plot_data <- norm_exp_data(exp_data)
   PCA_data_mat <- t(apply(plot_data[, 1:dim(plot_data)[2]], 2, as.numeric))
@@ -307,6 +319,11 @@ om_pca_plot <- function(exp_data, samples, outdir=NULL) {
   if (! is.null(outdir)) {
     out_prefix <- file.path(outdir, "PCA_plot")
     save_ggplot(pca_plot, out_prefix)
+  } else if (! is.null(out_prefix)) {
+    out_dir <- dirname(out_prefix)
+    path_name <- save_mkdir(out_dir)
+    save_ggplot(ggplot_out = pca_plot,
+                output = out_prefix)
   }
 
   return(pca_plot)
