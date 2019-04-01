@@ -5,7 +5,10 @@
 #' @examples
 #' om_heatmap(exp_test_data, test_sample_data)
 om_heatmap <- function(exp_data, samples,
-                       outdir=NULL, out_prefix=NULL) {
+                       outdir=NULL, out_prefix=NULL,
+                       scale='row',
+                       cluster_rows=T,
+                       cluster_cols=T) {
 
   # normalize exp data
   plot_data <- norm_exp_data(exp_data)
@@ -28,8 +31,8 @@ om_heatmap <- function(exp_data, samples,
 
   # adjust output height & width
   sample_num = length(colnames(plot_data))
-  heatmap_width <- (sample_num - 5)/3 + 2
-  heatmap_heigh <- (sample_num - 5)/3 + 4
+  heatmap_width <- (sample_num - 5)/3 + 2.5
+  heatmap_heigh <- (sample_num - 5)/3 + 4.5
   fontsize = (sample_num - 5)/10 + 4.5
   cellwidth <- (heatmap_width - 0.5) * 50/sample_num
 
@@ -39,8 +42,10 @@ om_heatmap <- function(exp_data, samples,
                        annotation_col = ann_color, annotation_colors = ann_colors,
                        annotation_legend = T, annotation_names_col = F,
                        color = gradiant_cell_cols,
-                       treeheight_row = 0, scale = "row", fontsize = fontsize,
-                       cellwidth = cellwidth, border_color = NA)
+                       treeheight_row = 0, scale = scale, fontsize = fontsize,
+                       cellwidth = cellwidth, border_color = NA,
+                       cluster_rows=cluster_rows,
+                       cluster_cols=cluster_cols)
   }
 
   if (! is.null(outdir)) {
