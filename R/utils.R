@@ -201,8 +201,10 @@ label_sample <- function(exp_df, group_vs_sample, sample_list, group_mean_exp=F)
   } else {
     sample_inf <- read.delim(group_vs_sample, header=F)
     colnames(sample_inf) <- c("condition", "sample")
-    sample_df <- read.delim(sample_list, header = F)
-    sample_inf <- dplyr::filter(sample_inf, condition %in% sample_df$V1)
+    if (!is.na(sample_list)) {
+      sample_df <- read.delim(sample_list, header = F)
+      sample_inf <- dplyr::filter(sample_inf, condition %in% sample_df$V1)
+    }
   }
   return(sample_inf)
 }
