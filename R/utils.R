@@ -219,9 +219,10 @@ test_data <- function(exp_df, test) {
 }
 
 
-exp_by_group <- function(exp_df, group_vs_sample) {
+exp_by_group <- function(exp_df, group_vs_sample, sample_list) {
   sample_inf <- label_sample(exp_df,
-                             group_vs_sample)
+                             group_vs_sample,
+                             sample_list)
   group_exp_df <- merge(sample_inf, t(exp_df),
                         by.x='sample',
                         by.y=0)
