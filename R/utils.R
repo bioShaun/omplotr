@@ -170,7 +170,7 @@ select_exp_data <- function(exp_obj, item_file, select='row') {
 }
 
 
-load_exp_file <- function(exp_file, genes, samples) {
+load_exp_file <- function(exp_file, genes, samples, gene_limit=DIFF_HEATMAP_GENE) {
   exp_obj <- data.table::fread(exp_file, check.names=F)
   total_target <- dim(exp_obj)[1]
   total_sample <- dim(exp_obj)[2] - 1
@@ -183,10 +183,10 @@ load_exp_file <- function(exp_file, genes, samples) {
   exp_df <- data.frame(exp_obj, check.names=F)
   rownames(exp_df) <- exp_df$target_id
   exp_df <- exp_df[, -1]
-  if (dim(exp_df)[1] > DIFF_HEATMAP_GENE) {
+  if (dim(exp_df)[1] > gene_limit) {
     gene_mean_exp <- sort(rowMeans(exp_df),
                           decreasing = T)
-    top_genes <- names(gene_mean_exp[1:DIFF_HEATMAP_GENE])
+    top_genes <- names(gene_mean_exp[1:gene_limit])
     exp_df <- exp_df[top_genes, ]
   }
 
@@ -240,12 +240,11 @@ exp_by_group <- function(exp_df, group_vs_sample, sample_list) {
 cluster_plot <- function(exp_df, sample_inf, out_prefix, method='hcluster', kmeans_center=NULL, cluster_cut_tree=NULL) {
   # cluster plot
 
-
   diff_matrix <- as.matrix(exp_df)
-  diff_gene_count <- dim(diff_matrix)[1]
-  log_diff_matrix <- log2(diff_matrix + 1)
+  norm_matrix <- as.matrix(norm_exp_data(exp_df))
+  diff_gene_count <- dim(norm_matrix)[1]
   # center rows, mean substracted
-  scale_log_diff_matrix = t(scale(t(log_diff_matrix), scale = F))
+  scale_log_diff_matrix = t(scale(t(norm_matrix), scale = F))
 
   # gene clustering according to centered distance values.
   if (method == 'hcluster') {
