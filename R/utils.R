@@ -237,11 +237,10 @@ exp_by_group <- function(exp_df, group_vs_sample, sample_list) {
 }
 
 
-cluster_plot <- function(exp_df, sample_inf, out_prefix) {
+cluster_plot <- function(exp_df, sample_inf, out_prefix, method='hcluster', kmeans_center=NULL, cluster_cut_tree=NULL) {
   # cluster plot
-  cluster_prefix <- paste(out_prefix, '.cluster.P', cluster_cut_tree, sep = '')
-  cluster_data_dir <- paste(out_prefix, '.cluster.P', cluster_cut_tree,'.all', sep = '')
-  dir.create(cluster_data_dir, showWarnings = F)
+
+
   diff_matrix <- as.matrix(exp_df)
   diff_gene_count <- dim(diff_matrix)[1]
   log_diff_matrix <- log2(diff_matrix + 1)
@@ -249,11 +248,21 @@ cluster_plot <- function(exp_df, sample_inf, out_prefix) {
   scale_log_diff_matrix = t(scale(t(log_diff_matrix), scale = F))
 
   # gene clustering according to centered distance values.
-  gene_dist = dist(scale_log_diff_matrix, method = "euclidean")
-  hc_genes = hclust(gene_dist, method = "complete")
-  gene_partition_assignments <- cutree(as.hclust(hc_genes), h = cluster_cut_tree/100 * max(hc_genes$height))
+  if (method == 'hcluster') {
+    gene_dist = dist(scale_log_diff_matrix, method = "euclidean")
+    hc_genes = hclust(gene_dist, method = "complete")
+    gene_partition_assignments <- cutree(as.hclust(hc_genes), h = cluster_cut_tree/100 * max(hc_genes$height))
 
+    cluster_prefix <- paste(out_prefix, '.cluster.P', cluster_cut_tree, sep = '')
+    cluster_data_dir <- paste(out_prefix, '.cluster.P', cluster_cut_tree,'.all', sep = '')
+  } else if (method == 'kmeans') {
+    km_res = kmeans(scale_log_diff_matrix, kmeans_center)
+    gene_partition_assignments <- km_res$cluster
+    cluster_prefix <- paste(out_prefix, '.cluster.Kmeans.c', kmeans_center, sep = '')
+    cluster_data_dir <- paste(out_prefix, '.cluster.Kmeans.c', kmeans_center,'.all', sep = '')
+  }
   max_cluster_count = max(gene_partition_assignments)
+  dir.create(cluster_data_dir, showWarnings = F)
   cluster_num_cutoff = max(c(MIN_CLUSTER_NUM, diff_gene_count * MIN_CLUSTER_POR))
 
   all_partition_list <- list()
@@ -265,6 +274,11 @@ cluster_plot <- function(exp_df, sample_inf, out_prefix) {
     partition_data_df <- as.data.frame(partition_data)
     partition_data_df <- cbind(Gene_id = rownames(partition_data_df), partition_data_df)
     write.table(partition_data_df, file = paste(cluster_data_dir, "/", cluster_name,
+                                                ".log2.scaled.txt", sep = ""), quote = F, row.names = F, sep = "\t")
+    partition_data_ori <- diff_matrix[partition_i, , drop = F]
+    partition_data_ori_df <- as.data.frame(partition_data_ori)
+    partition_data_ori_df <- cbind(Gene_id = rownames(partition_data_ori_df), partition_data_ori_df)
+    write.table(partition_data_ori_df, file = paste(cluster_data_dir, "/", cluster_name,
                                                 ".txt", sep = ""), quote = F, row.names = F, sep = "\t")
     partition_data_df$cluster <- cluster_name
     melt_partition_data_df <- melt(partition_data_df, id = c("cluster", "Gene_id"))
