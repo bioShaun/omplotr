@@ -98,11 +98,11 @@ om_bwa_mapping_plot <- function(mapping_stats, sample_limit, out_prefix=NULL) {
 #' # show detail sample information
 #' om_reads_cov_plot(cov_stats, 10, 100)
 om_reads_cov_plot <- function(coverage_table, sample_limit, max_depth, out_prefix=NULL) {
-  cov.data <- read.table(coverage_table,header = T)
+  cov.data <- read.table(coverage_table,header = T, check.names = F)
   colnames(cov.data)[1] <- "Depth"
   cov_sum <- apply(cov.data[,c(-1)],2,sum)
   sample_num <- dim(cov.data)[2] -1
-  cov_cum <- 1-cumsum(cov.data[,c(-1)])/cov_sum
+  cov_cum <- 1 - sweep(cumsum(cov.data[,c(-1)]),2,cov_sum,`/`)
   plot_breaks <- c(seq(0, max_depth/2, max_depth/10), max_depth)
   cum.data <- cbind(cov.data$Depth,cov_cum)
   colnames(cum.data)[1] <- "Depth"
