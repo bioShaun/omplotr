@@ -111,6 +111,12 @@ om_reads_cov_plot <- function(coverage_table, sample_limit, max_depth, out_prefi
   sample_col <- palette_colors(pal_name = 'Set1',
                                sample_num = sample_num)
 
+  # sample order by max depth cov desc order
+  order_df <- dplyr::filter(cum_melt, Depth == max_depth)
+  order_df <- dplyr::arrange(order_df, dplyr::desc(value))
+  sample_order <- order_df$SampleID
+  cum_melt$SampleID <- factor(cum_melt$SampleID, levels = sample_order)
+
   if (sample_num < sample_limit) {
     cov_fig <- ggplot(cum_melt, aes(Depth, value, colour = SampleID)) +
       geom_line(size = 1) +
