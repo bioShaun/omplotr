@@ -23,8 +23,7 @@
 om_bwa_mapping_plot <- function(mapping_stats, sample_limit, out_prefix=NULL) {
 
   mapping_plot_order <- c('reads mapped', 'reads mapped and paired',
-                          'reads properly paired', 'reads MQ0',
-                          'non-primary alignments', 'reads unmapped')
+                          'reads properly paired', 'reads unmapped')
 
   mapping_df <- read.delim(mapping_stats)
   colnames(mapping_df)[1] <- 'Item'
