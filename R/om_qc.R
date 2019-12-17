@@ -2,9 +2,9 @@
 #' @param plot_data gc dataframe
 #' @param output out put prefix, default is NULL, don't output file
 #' @examples
-#' gc_line_plot(gc_test_data)
+#' gc_line_plot(gc_test_data, title='test title')
 
-gc_line_plot <- function(plot_data, output=NULL) {
+gc_line_plot <- function(plot_data, output=NULL, title="") {
 
   sample_number <- length(unique(plot_data$sample))
   seq_len <- round(max(plot_data[, 1])/2)
@@ -20,7 +20,8 @@ gc_line_plot <- function(plot_data, output=NULL) {
     xlab("Postion") + ylab("Percent(%)") +
     guides(color = guide_legend(title = "")) +
     theme_onmath() +
-    scale_color_brewer(palette = 'Set1')
+    scale_color_brewer(palette = 'Set1') +
+    ggtitle(title)
 
   if (sample_number > 1) {
     facet_wrap_ncol = round(sqrt(sample_number))
@@ -44,7 +45,7 @@ gc_line_plot <- function(plot_data, output=NULL) {
 #' @param output out put prefix, default is NULL, don't output file
 #' @examples
 #' reads_quality_plot(rq_test_data)
-reads_quality_plot <- function(plot_data, output=NULL) {
+reads_quality_plot <- function(plot_data, output=NULL, title="") {
 
   col <- plot_data$color
   names(col) <- col
@@ -59,7 +60,8 @@ reads_quality_plot <- function(plot_data, output=NULL) {
     guides(fill = F) +
     scale_y_continuous(breaks = seq(from = 0,to = max(plot_data$Proportion), by = 0.1),
                        labels = scales::percent(seq(from = 0,to = max(plot_data$Proportion), by = 0.1))) +
-    xlab("Quality Score")
+    xlab("Quality Score") +
+    ggtitle(title)
 
   if (sample_number > 1) {
     facet_wrap_ncol = round(sqrt(sample_number))
