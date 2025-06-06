@@ -15,7 +15,6 @@ Imports:
     pheatmap,
     reshape2,
     gridExtra,
-    goseq,
     data.table,
     dplyr,
     plyr,
@@ -23,12 +22,10 @@ Imports:
     argparser,
     tximport,
     rhdf5,
-    pathview,
     stringr
 RoxygenNote: 6.0.1
 Depends: 
     ggplot2,
-    topGO
 Suggests: 
     knitr,
     rmarkdown
